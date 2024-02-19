@@ -15,6 +15,6 @@ contract testEncoding is Test {
     function getOutput() public returns (bytes memory x){
         x = testContract.encodeNumber();
         // console.log("The value of x is", x);
-        console.log("The value of x is", x);
+        // console.log("The value of x is", x);
     }
 }
