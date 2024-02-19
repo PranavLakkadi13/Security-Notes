@@ -13,6 +13,8 @@ dictionary_weight = 40
 include_storage = true
 include_push_bytes = true
 
+remappings = ['@openzeppelin/contracts=lib/openzeppelin-contracts/contracts']
+
 [invariant]
 runs = 2560
 depth = 15

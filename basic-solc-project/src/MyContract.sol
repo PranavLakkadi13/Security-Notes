@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+/// @title This contract is to teach and understand fuzzing tests 
+/// @author Pranav Lakkadi 
 contract myContract {
     uint256 public shouldAlwaysBeZero = 0;
 
