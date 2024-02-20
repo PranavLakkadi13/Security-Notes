@@ -32,10 +32,41 @@ contract Encoding {
     }
 
     // The below function is going to just convert the string input to the type bytes
-    // The output of the bytes will be similar to the ouput of encodeStringPacked()
-    // 
+    // The output of the bytes will be similar to the output of encodeStringPacked()
+    // The differnce if in the method used to encode, the type bytes is UTF-8, ABI
+    // encoding is based on the abi specs
 
     function bytesString() public pure returns (bytes memory) {
         return bytes("some string");
+    }
+
+    function decodeString() public pure returns (string memory) {
+        string memory someString = abi.decode(encodeString(),(string));
+        return someString;
+    }
+
+    function multiEncoding() public pure returns (bytes memory) {
+        return abi.encode("some string","some Other string");
+    }
+
+    function multiPackedEncoding() public pure returns (bytes memory) {
+        return abi.encodePacked("some string","some Other string");
+    }
+
+    function multiDecode() public pure returns (string memory, string memory) {
+        (string memory str1,string memory str2) = abi.decode(multiEncoding(),(string,string));
+        return (str1,str2);
+    }
+
+    // The function multi decode packed wont work 
+    function multiDecodePacked() public pure returns (string memory, string memory) {
+        (string memory str1,string memory str2) = abi.decode(multiPackedEncoding(),(string,string));
+        return (str1,str2);
+    }
+
+    // to decode multiple packed string its better to just typecast to string 
+    function multidecodeStringCast() public pure returns (string memory) {
+        string memory string1 = string(multiPackedEncoding());
+        return string1;
     }
 }

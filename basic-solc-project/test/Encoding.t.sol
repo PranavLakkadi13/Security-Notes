@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {Test,console} from "forge-std/Test.sol";
-import "forge-std/console.sol";
+import {Test} from "forge-std/Test.sol";
+import {console} from "forge-std/console.sol";
 import {Encoding} from "../src/Abi_Lesson/Encoding.sol";
 
 contract testEncoding is Test {
@@ -26,5 +26,9 @@ contract testEncoding is Test {
         console.logBytes(x);
     }
 
-    
+    function decodeString() public  {
+        string memory x = testContract.decodeString();
+        console.log(x);
+        assertEq(x,"some string");
+    }
 }
