@@ -53,18 +53,24 @@ Notes:-
    --> The below is the fields that are filled during a transaction 
    const tx = {
        nonce : Nonce,
+
        gasPrice : 20000000000,
+       
        gasLimit: 1000000,
+       
        to: null, // since it is contract creation 
+       
        value: 0, // since no value is being sent
+       
        data : bytecode,// data is the binary or bytecode of the contract    
+       
        chainId: 5777, // network Id each blockchain has its unique id 
    }
 
    v,r,s the fields for verifying the signature are virified using ethers internally
 
    example :- address.call{value : 100}("");
-   using
+   using the 
 
    case 1)
    When a contract is created, at a particular address the bytecode of the contract is 
