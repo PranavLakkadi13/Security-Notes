@@ -12,10 +12,30 @@ contract Encoding {
     }
 
     function encodeNumber() public pure returns(bytes memory) {
-        return abi.encode(1);
+        bytes memory num = abi.encode(1);
+        return num;
     }
 
+
+    // The Big difference between encode and encodePacked is that encode is like 
+    // the perfect bytes version of the input that the EVM can understand whereas the 
+    // encode packed version is the closer and similar version to the EVM bytes but 
+    // removes unnecessary padding 
+
     function encodeString() public pure returns (bytes memory) {
-        return abi.encode("some string");
+        bytes memory str = abi.encode("some string");
+        return str;
+    }
+
+    function encodeStringPacked() public pure returns (bytes memory) {
+        return abi.encodePacked("some string");
+    }
+
+    // The below function is going to just convert the string input to the type bytes
+    // The output of the bytes will be similar to the ouput of encodeStringPacked()
+    // 
+
+    function bytesString() public pure returns (bytes memory) {
+        return bytes("some string");
     }
 }
