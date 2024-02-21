@@ -7,3 +7,6 @@
 [submodule "PasswordStore-Audit1/lib/forge-std"]
 	path = PasswordStore-Audit1/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "PasswordStore-Audit1/lib/openzeppelin-contracts"]
+	path = PasswordStore-Audit1/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
