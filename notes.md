@@ -50,6 +50,17 @@ Notes:-
 1) for any call that is done to the chain there is a data field that has to filled 
    it has information like function call and its arguments or the bytecode
 
+   case 1)
+   When a contract is created, at a particular address the bytecode of the contract is 
+   stored at so that is in the data field during contract deployment.
+
+   case 2) 
+   When a contract is live on the chain, and when a function call is made it is 
+   basically sending a function selector with any arguments to the contrcat address 
+   and the bytecode will see the function selector and perform the needed action
+   with the arguments that were provided. This function signature is the data field 
+   in the call 
+
    --> The below is the fields that are filled during a transaction 
    const tx = {
        nonce : Nonce,
@@ -70,16 +81,33 @@ Notes:-
    v,r,s the fields for verifying the signature are virified using ethers internally
 
    example :- address.call{value : 100}("");
-   using the 
+   
+   using the above example we can see low-level call to send value.
+   
+   with the above example we directly modified the value in the tranction like the above ethers example. 
 
-   case 1)
-   When a contract is created, at a particular address the bytecode of the contract is 
-   stored at so that is in the data field during contract deployment.
 
-   case 2) 
-   When a contract is live on the chain, and when a function call is made it is 
-   basically sending a function selector with any arguments to the contrcat address 
-   and the bytecode will see the function selector and perform the needed action
-   with the arguments that were provided. This function signature is the data field 
-   in the call 
+   ex1) The above example we can see the that call function has {} curly brackets and 
+         the passed arguments can be used to directly populate the transaction field 
+         like gasLimit,value etc
+
+   ex2) The above example we can see that the call function has () curve brackets and 
+         in the brackets we can pass the function signature and call functions as data part of the transaction 
+   
+   The low-level calls:-
+   
+   1) call: Will be used to call functions that change the state of the blockchain
+
+   2) static-call: Will be used to call functions that do not change the state of blockchain, its like the low-level version of the "view" or "pure functions"
+
+
+
+1) Proxies are a great way to upgrade the code of the contract but they have inherit risks and other 
+   vulnerabilites and if the only one entity can make an upgrade that is centrality.
+
+   The big difference is that the proxy contract is the main contract that stores the data and the 
+   implementation contract is the contract that has logic of the calls.
+
+   The proxy internally uses delegatecall to read the internal details of the implentation and changes the 
+   state in the proxy contract 
 

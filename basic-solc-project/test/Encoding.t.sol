@@ -31,4 +31,8 @@ contract testEncoding is Test {
         console.log(x);
         assertEq(x,"some string");
     }
+
+    // function multiEncode() public {
+    //     (bool x,) = address(testContract).staticcall();
+    // }
 }
