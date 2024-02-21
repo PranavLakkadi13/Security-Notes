@@ -21,10 +21,11 @@ contract TestingSelfDestruct is Test {
         return abi.encodeWithSignature("deposit()");
     }
 
-    function depositETH() public {
+    function depositETHinGameContract() public {
         vm.prank(bob);
         hoax(address(bob),1e19);
-        (bool success, )  = address(game).call{value: 1e18}(getABIPacked());
+        // game.deposit();
+        (bool success, )  = address(game).call{value: 1e18}(abi.encodeWithSignature("deposit()"));
         assertEq(success,true);
         assertEq(address(game).balance,1e18);
     }

@@ -111,3 +111,11 @@ Notes:-
    The proxy internally uses delegatecall to read the internal details of the implentation and changes the 
    state in the proxy contract 
 
+
+3) SelfDestruct is a keyword in solidity, it is used to self destruct the contract and remove the code from 
+   the chain and send a eth locked in to a address forcefully 
+
+   in the above example we can see that the contract in /src/SelfDestruct we have 2 contracts as example and see
+   that in the attack contract we have the selfdestruct function that destroys the contract and forecefully sends the ether into the game and increases the balance which leads to the depositors having their money locked 
+   this attack function is now forcefully sending ether to the contract 
+
