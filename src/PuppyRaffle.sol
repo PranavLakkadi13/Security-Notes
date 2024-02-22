@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.7.6;
+pragma solidity 0.7.6; // @audit should use safe math instead of doing directly 
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -20,14 +20,14 @@ contract PuppyRaffle is ERC721, Ownable {
 
     uint256 public immutable entranceFee;
 
-    address[] public players;
-    uint256 public raffleDuration;
-    uint256 public raffleStartTime;
+    address[] public players; // @audit use mapping over array 
+    uint256 public raffleDuration; // @audit can be marked immutable 
+    uint256 public raffleStartTime;  
     address public previousWinner;
 
     // We do some storage packing to save gas
     address public feeAddress;
-    uint64 public totalFees = 0;
+    uint64 public totalFees = 0; // @audit should use uint256 
 
     // mappings to keep track of token traits
     mapping(uint256 => uint256) public tokenIdToRarity;
@@ -76,6 +76,8 @@ contract PuppyRaffle is ERC721, Ownable {
     /// @notice they have to pay the entrance fee * the number of players
     /// @notice duplicate entrants are not allowed
     /// @param newPlayers the list of players to enter the raffle
+    //  @audit -array can be in calldata 
+    //  @audit -check fro duplicates can be wrong 
     function enterRaffle(address[] memory newPlayers) public payable {
         require(msg.value == entranceFee * newPlayers.length, "PuppyRaffle: Must send enough to enter raffle");
         for (uint256 i = 0; i < newPlayers.length; i++) {
@@ -93,6 +95,7 @@ contract PuppyRaffle is ERC721, Ownable {
 
     /// @param playerIndex the index of the player to refund. You can find it externally by calling `getActivePlayerIndex`
     /// @dev This function will allow there to be blank spots in the array
+    // @audit 
     function refund(uint256 playerIndex) public {
         address playerAddress = players[playerIndex];
         require(playerAddress == msg.sender, "PuppyRaffle: Only the player can refund");
