@@ -30,5 +30,15 @@ contract PasswordStoreTest is Test {
         vm.expectRevert(PasswordStore.PasswordStore__NotOwner.selector);
         passwordStore.getPassword();
     }
-    
+
+    function test_anyone_can_change_Password(address randomAddress) public {
+        vm.assume(randomAddress != owner);
+        vm.prank(randomAddress);
+        string memory newPassword = "myNewPassword";
+        passwordStore.setPassword(newPassword);
+
+        vm.prank(owner);
+        string memory actualPassword = passwordStore.getPassword();
+        assertEq(actualPassword, newPassword);
+    }
 }
