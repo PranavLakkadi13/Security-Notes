@@ -12,9 +12,11 @@ contract PasswordStore {
 
     // STATE VARIABLES
     address private s_owner;
+    // @audit the s_password variable is viewable to anyone since the its a public blockchain
     string private s_password;
 
     // EVENTS
+    // @audit i correct the name 
     event SetNetPassword();
 
     constructor() {
@@ -36,6 +38,7 @@ contract PasswordStore {
 
     /*
      * @notice This allows only the owner to retrieve the password.
+     @audit -- fix the document 
      * @param newPassword The new password to set.
      */
     function getPassword() external view returns (string memory) {
