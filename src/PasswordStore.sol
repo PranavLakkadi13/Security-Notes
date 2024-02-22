@@ -1,18 +1,20 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity 0.8.18; //q) check the solidity version docs and issues ---
 
 /*
  * @author not-so-secure-dev
  * @title PasswordStore
- * @notice This contract allows you to store a private password that others won't be able to see. 
+ * @notice This contract allows you to store a private password that others won't be able to see.
  * You can update your password at any time.
  */
 contract PasswordStore {
     error PasswordStore__NotOwner();
 
+    // STATE VARIABLES
     address private s_owner;
     string private s_password;
 
+    // EVENTS
     event SetNetPassword();
 
     constructor() {
@@ -23,6 +25,10 @@ contract PasswordStore {
      * @notice This function allows only the owner to set a new password.
      * @param newPassword The new password to set.
      */
+    // q) can a non-owner set the password?
+    // q) should a non owner be allowed to set it?
+    // @audit -- high vul (any one can store the password)
+    // missing access control
     function setPassword(string memory newPassword) external {
         s_password = newPassword;
         emit SetNetPassword();
