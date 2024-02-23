@@ -13,6 +13,7 @@ contract AuditRaffle is Test {
     address test2 = makeAddr("test2");
     address test3 = makeAddr("test3");
     address feeAddress = makeAddr("fee holder");
+    address alice = makeAddr("alice");
 
     uint256 entranceFee = 1e18;
 
@@ -32,6 +33,17 @@ contract AuditRaffle is Test {
         players[2] = address(test3);
         players[3] = address(owner);
         raffle.enterRaffle{value : 4e18}(players);
+
+        address[] memory players1 = new address[](2);
+        players1[0] = address(feeAddress);
+        players1[1] = address(alice);
+        raffle.enterRaffle{value : 2e18}(players1);
+
+        uint256 test = raffle.getActivePlayerIndex(address(feeAddress));
+        assertEq(test, 4);
+        assertEq(raffle.getActivePlayerIndex(address(alice)),5);
+        assertEq(raffle.getActivePlayerIndex(address(test1)),0);
+        assertEq(raffle.getActivePlayerIndex(address(1233)),0);
     }
 
     function testRefundRaffle() public {
@@ -52,6 +64,10 @@ contract AuditRaffle is Test {
 
         address x  = raffle.players(1);
         assertEq(x, address(0));
+
+        vm.prank(alice);
+        vm.expectRevert();
+        raffle.refund(0);
 
     }
 
@@ -79,5 +95,11 @@ contract AuditRaffle is Test {
         vm.prank(owner);
         raffle.changeFeeAddress(y);
     }
+
+    function testFuzzentrance(address[] memory x) public {
+        raffle.enterRaffle(x);
+    }
+    
+    // function 
 
 }
