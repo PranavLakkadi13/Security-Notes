@@ -109,5 +109,6 @@ The natspec for the function `PasswordStore::getPassword` indicates it should ha
 **Recommended Mitigation:** Remove the incorrect natspec line.
 
 ```diff
++
 -     * @param newPassword The new password to set.
 ```
