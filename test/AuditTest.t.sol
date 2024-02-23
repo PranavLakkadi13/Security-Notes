@@ -153,6 +153,29 @@ contract AuditRaffle is Test {
         uint256 z = address(feeAddress).balance;
         raffle.withdrawFees();
         uint256 l = address(feeAddress).balance;
+        assert(z<l);
     }
     
+    function testPossibleDOS() public {
+
+        vm.txGasPrice(1);
+        address[] memory players = new address[](100);
+        for (uint i = 0; i < 100; i++) {
+            players[i] =address(uint160(i));
+        }
+        uint256 gasFirst100 = gasleft();
+        raffle.enterRaffle{value: 100e18}(players);
+        uint256 gasEnd100 = gasleft();
+        console.log("The gas after first 100 deposit", (gasFirst100 - gasEnd100 )* tx.gasprice);
+
+        address[] memory playersNew = new address[](10);
+        for (uint i = 0; i < 10; i++) {
+            playersNew[i] =address(i + 100);
+        }
+        uint256 gasSecond10 = gasleft();
+        raffle.enterRaffle{value: 10e18}(playersNew);
+        uint256 gasSecondEND10 = gasleft();
+        console.log("The gas after first 100 deposit", (gasSecond10 - gasSecondEND10) * tx.gasprice);
+    }
+
 }
