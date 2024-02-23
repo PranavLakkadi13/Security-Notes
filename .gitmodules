@@ -10,3 +10,6 @@
 [submodule "PasswordStore-Audit1/lib/openzeppelin-contracts"]
 	path = PasswordStore-Audit1/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "exploits-minimized-overview"]
+	path = exploits-minimized-overview
+	url = https://github.com/PranavLakkadi13/Security-Notes.git
