@@ -100,6 +100,59 @@ contract AuditRaffle is Test {
         raffle.enterRaffle(x);
     }
     
-    // function 
+    function testabiencoding() public {
+        vm.prevrandao(bytes32(uint256(42)));
+        uint256 rarity = uint256(keccak256(abi.encodePacked(msg.sender, block.difficulty))) % 100;
+        console.log(rarity);
+
+        // vm.warp(29722);
+        uint256 winnerIndex =
+            uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp, block.difficulty))) %5;
+       console.log(winnerIndex);
+        
+    }
+
+    function testselectWinner() public {
+        address[] memory players = new address[](4);
+        players[0] = address(test1);
+        players[1] = address(test2);
+        players[2] = address(test3);
+        players[3] = address(owner);
+        raffle.enterRaffle{value : 4e18}(players);
+        
+
+        // vm.warp(block.timestamp + 501);
+        // // vm.prevrandao(bytes32(uint256(12123241234)));
+        // raffle.selectWinner();
+        // string memory x = raffle.tokenURI(0);
+        // console.log(x);
+
+        vm.warp(block.timestamp + 501);
+        vm.prevrandao(bytes32(uint256(121234)));
+        raffle.selectWinner();
+        string memory x = raffle.tokenURI(0);
+        console.log(x);
+
+    }
+
+    function testcheckfeetowithdraw() public {
+         address[] memory players = new address[](4);
+        players[0] = address(test1);
+        players[1] = address(test2);
+        players[2] = address(test3);
+        players[3] = address(owner);
+        raffle.enterRaffle{value : 4e18}(players);
+        
+
+        vm.warp(block.timestamp + 501);
+        // vm.prevrandao(bytes32(uint256(12123241234)));
+        raffle.selectWinner();
+        string memory x = raffle.tokenURI(0);
+        console.log(x);
+
+        uint256 z = address(feeAddress).balance;
+        raffle.withdrawFees();
+        uint256 l = address(feeAddress).balance;
+    }
 
 }
