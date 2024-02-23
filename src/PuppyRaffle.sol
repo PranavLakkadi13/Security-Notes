@@ -77,7 +77,9 @@ contract PuppyRaffle is ERC721, Ownable {
     /// @notice duplicate entrants are not allowed
     /// @param newPlayers the list of players to enter the raffle
     //  @audit -array can be in calldata 
-    //  @audit -check fro duplicates can be wrong 
+    //  @audit - owner should not enter the raffle (check missing)
+    //  @audit - better to use array and only a single player enter the raffle at a time 
+    // ---> checked 
     function enterRaffle(address[] memory newPlayers) public payable {
         require(msg.value == entranceFee * newPlayers.length, "PuppyRaffle: Must send enough to enter raffle");
         for (uint256 i = 0; i < newPlayers.length; i++) {
@@ -96,6 +98,7 @@ contract PuppyRaffle is ERC721, Ownable {
     /// @param playerIndex the index of the player to refund. You can find it externally by calling `getActivePlayerIndex`
     /// @dev This function will allow there to be blank spots in the array
     // @audit 
+    // ----> checked 
     function refund(uint256 playerIndex) public {
         address playerAddress = players[playerIndex];
         require(playerAddress == msg.sender, "PuppyRaffle: Only the player can refund");
@@ -110,6 +113,8 @@ contract PuppyRaffle is ERC721, Ownable {
     /// @notice a way to get the index in the array
     /// @param player the address of a player in the raffle
     /// @return the index of the player in the array, if they are not active, it returns 0
+    // @audit use bool return rather than int return 
+    // ----> checked 
     function getActivePlayerIndex(address player) external view returns (uint256) {
         for (uint256 i = 0; i < players.length; i++) {
             if (players[i] == player) {
@@ -167,12 +172,14 @@ contract PuppyRaffle is ERC721, Ownable {
 
     /// @notice only the owner of the contract can change the feeAddress
     /// @param newFeeAddress the new address to send fees to
+    // @audit --> checked 
     function changeFeeAddress(address newFeeAddress) external onlyOwner {
         feeAddress = newFeeAddress;
         emit FeeAddressChanged(newFeeAddress);
     }
 
     /// @notice this function will return true if the msg.sender is an active player
+    // @audit checked --> 
     function _isActivePlayer() internal view returns (bool) {
         for (uint256 i = 0; i < players.length; i++) {
             if (players[i] == msg.sender) {
@@ -183,6 +190,8 @@ contract PuppyRaffle is ERC721, Ownable {
     }
 
     /// @notice this could be a constant variable
+    // @audit 
+    // --> checked 
     function _baseURI() internal pure returns (string memory) {
         return "data:application/json;base64,";
     }
