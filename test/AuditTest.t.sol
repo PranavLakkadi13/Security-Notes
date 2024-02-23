@@ -135,6 +135,20 @@ contract AuditRaffle is Test {
 
     }
 
+    function testSelectwinnerSHouldfailonlessplayers() public {
+        address[] memory players = new address[](3);
+        players[0] = address(test1);
+        players[1] = address(test2);
+        players[2] = address(test3);
+        raffle.enterRaffle{value : 3e18}(players);
+
+        vm.warp(block.timestamp + 501);
+        vm.expectRevert();
+        raffle.selectWinner();
+        // string memory x = raffle.tokenURI(0);
+        // console.log(x);
+    }
+
     function testcheckfeetowithdraw() public {
          address[] memory players = new address[](4);
         players[0] = address(test1);
@@ -177,5 +191,17 @@ contract AuditRaffle is Test {
         uint256 gasSecondEND10 = gasleft();
         console.log("The gas after first 100 deposit", (gasSecond10 - gasSecondEND10) * tx.gasprice);
     }
+
+    function testRenetrancyRefundFunc() public {
+
+    }
+
+}
+
+contract AttackContract {
+    PuppyRaffle puppy;
+    uint256 entranceFee;
+    uint256 indexattacker;
+
 
 }
