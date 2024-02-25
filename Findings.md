@@ -1,3 +1,10 @@
+### [H-1] REentrancy in `PuppyRaffle::refund()`
+
+**Description** 
+
+
+
+
 ### [M-] Looping through the loop to check for duplicates in the `enterRaffle()` can cause DOS,Incrementing gas cost for future entrants
 
 **Description**
