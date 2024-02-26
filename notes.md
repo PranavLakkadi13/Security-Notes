@@ -24,7 +24,9 @@
             iv) Third party contract is simply malicious
 
 
+4. Its good to follow CEI to avoid re-enetrancy even though other methods exist like the   openzeppelin  (non-Reentrant modifier) but its a good method to follow the CEI 
 
+5. Be carefull when evaluation an strictly == `address(this).balance` check since anyone can use the selfdestruct and force eth into a contract and create a DOS attack making the condition always false and there could be a loss in functionality
 
 
 
