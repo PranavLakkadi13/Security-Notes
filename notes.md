@@ -71,7 +71,7 @@
 
     --> The below is the fields that are filled during a transaction
     const tx = {
-    nonce : Nonce,
+        nonce : Nonce,
 
         gasPrice : 20000000000,
 
