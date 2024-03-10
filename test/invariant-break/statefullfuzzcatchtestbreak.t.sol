@@ -19,7 +19,7 @@ contract StatefulFuzzCatchesTest is StdInvariant, Test {
         assert(testContract.doMoreMathAgain(x) != 0);
     }
 
-    // just like the testkeyword in a test function here the invariant is the keyword
+    // just like the test keyword in a test function here the invariant is the keyword
     function invariant_fuzztobreak() public view {
         assert(testContract.storedValue() != 0);
     }
