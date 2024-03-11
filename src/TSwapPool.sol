@@ -110,9 +110,11 @@ contract TSwapPool is ERC20 {
     /// @param maximumPoolTokensToDeposit The maximum amount of pool tokens the user is willing to deposit, again it's
     /// derived from the amount of WETH the user is going to deposit
     /// @param deadline The deadline for the transaction to be completed by
+
+    // @audit what if the initial liquidty is not set ?
     function deposit(
         uint256 wethToDeposit,
-        uint256 minimumLiquidityTokensToMint,
+        uint256 minimumLiquidityTokensToMint, // @audit when doin for the first we set the ratio
         uint256 maximumPoolTokensToDeposit,
         uint64 deadline
     )
