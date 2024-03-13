@@ -7,6 +7,7 @@ import {ERC20Mock} from "../mocks/ERC20Mock.sol";
 import {MockWETH} from "../mocks/MockWETH.sol";
 import {PoolFactory} from "../../src/PoolFactory.sol";
 import {TSwapPool} from "../../src/TSwapPool.sol";
+import {Handler} from "../../test/invariant/Handler.t.sol";
 
 contract InvariantTest is StdInvariant, Test {
     // assets
@@ -15,11 +16,12 @@ contract InvariantTest is StdInvariant, Test {
 
     // contracts
     PoolFactory public factory;
-    TSwapPool public pool; // PoolToken/WETH pool 
+    TSwapPool public pool; // PoolToken/WETH pool
 
     int256 constant STARTING_X = 100e18; // balance of ERC20
-    int256 constant STARTING_Y = 50e18;  // balance of weth
+    int256 constant STARTING_Y = 50e18; // balance of weth
 
+    Handler private handler;
 
     function setUp() public {
         pooltoken = new ERC20Mock();
@@ -29,11 +31,20 @@ contract InvariantTest is StdInvariant, Test {
         pool = TSwapPool(factory.createPool(address(pooltoken)));
 
         pooltoken.mint(address(this), uint256(STARTING_X));
-        weth.mint(address(this),uint256(STARTING_Y));        
+        weth.mint(address(this), uint256(STARTING_Y));
 
         pooltoken.approve(address(pool), type(uint256).max);
-        weth.approve(address(pool),type(uint256).max);
+        weth.approve(address(pool), type(uint256).max);
 
-        pool.deposit(uint256(STARTING_Y),uint256(STARTING_Y),uint256(STARTING_X),uint64(block.timestamp));
+        pool.deposit(
+            uint256(STARTING_Y),
+            uint256(STARTING_Y),
+            uint256(STARTING_X),
+            uint64(block.timestamp)
+        );
+
+        handler = new Handler(pool);
+
+        targetContract(address(handler));
     }
 }
