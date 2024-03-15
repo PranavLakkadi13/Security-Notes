@@ -45,6 +45,17 @@ contract InvariantTest is StdInvariant, Test {
 
         handler = new Handler(pool);
 
+        bytes4[] memory selectors = new bytes4[](3);
+        selectors[0] = handler.swapPoolTokenForWethBasedonOutputWETH.selector;
+        selectors[1] = handler.deposit.selector;
+        selectors[2] = handler.startingY.selector;
+
         targetContract(address(handler));
+        targetSelector(FuzzSelector({addr: address(handler) , selectors: selectors}));
+    }
+
+
+    function statefulFuzz_constantProductFormulaStaysTheSame() public {
+        assert(handler.actualDeltaX() == handler.expectedDeltaX());
     }
 }

@@ -5,6 +5,7 @@ import {TSwapPool} from "../../src/TSwapPool.sol";
 import {MockWETH} from "../mocks/MockWETH.sol";
 import {ERC20Mock} from "../mocks/ERC20Mock.sol";
 import {Test, console2} from "forge-std/Test.sol";
+import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 contract Handler is Test {
     TSwapPool private pool;
@@ -12,14 +13,15 @@ contract Handler is Test {
     ERC20Mock private token;
 
     // ghost variables basically only used for the test contract (handler)
-    int256 expectedDeltaY;
-    int256 expectedDeltaX;
-    int256 startingY;
-    int256 startingX;
-    int256 actualDeltaX;
-    int256 actualDeltaY;
+    int256 public expectedDeltaY;
+    int256 public expectedDeltaX;
+    int256 public startingY;
+    int256 public startingX;
+    int256 public actualDeltaX;
+    int256 public actualDeltaY;
 
     address liquidityProvider = makeAddr("LP");
+    address swapper = makeAddr("swapper");
 
     constructor(TSwapPool _pool) {
         pool = _pool;
@@ -67,6 +69,35 @@ contract Handler is Test {
             return;
         }
 
+        uint256 pooltokenamount = pool.getInputAmountBasedOnOutput(outputWeth,token.balanceOf(address(pool)),weth.balanceOf(address(pool)));
 
+        if (pooltokenamount > type(uint96).max) {
+            return;
+        }
+
+        startingX = int256(token.balanceOf(address(this)));
+        startingY = int256(weth.balanceOf(address(this)));
+
+        expectedDeltaY = -1 * int256(outputWeth);
+        expectedDeltaX = int256(pool.getPoolTokensToDepositBasedOnWeth(pooltokenamount));
+
+        if (token.balanceOf(swapper) < pooltokenamount) {
+            token.mint(swapper,pooltokenamount - token.balanceOf(swapper) + 1);
+        }
+
+        vm.startPrank(swapper);
+
+        token.approve(address(pool), type(uint256).max);
+        pool.swapExactOutput(IERC20(address(token)),IERC20(address(weth)),outputWeth,(uint64(block.timestamp)));
+
+        vm.stopPrank();
+
+
+        // actual
+        uint256 endingY = weth.balanceOf(address(this));
+        uint256 endingX = token.balanceOf(address(this));
+
+        actualDeltaX = int256(endingX) - int(startingX);
+        actualDeltaY = int256(endingY) - int(startingY);
     }
 }
