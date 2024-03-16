@@ -30,10 +30,11 @@ contract Handler is Test {
     }
 
     function deposit(uint256 _wethAmount) public {
-        _wethAmount = bound(_wethAmount, 0, type(uint96).max);
+        uint256 minWeth = pool.getMinimumWethDepositAmount();
+        _wethAmount = bound(_wethAmount, minWeth, type(uint96).max);
 
-        startingX = int256(token.balanceOf(address(this)));
-        startingY = int256(weth.balanceOf(address(this)));
+        startingX = int256(token.balanceOf(address(pool)));
+        startingY = int256(weth.balanceOf(address(pool)));
 
         expectedDeltaY = int256(_wethAmount);
         expectedDeltaX = int256(pool.getPoolTokensToDepositBasedOnWeth(_wethAmount));
@@ -55,15 +56,16 @@ contract Handler is Test {
         vm.stopPrank();
 
         // actual
-        uint256 endingY = weth.balanceOf(address(this));
-        uint256 endingX = token.balanceOf(address(this));
+        uint256 endingY = weth.balanceOf(address(pool));
+        uint256 endingX = token.balanceOf(address(pool));
 
         actualDeltaX = int256(endingX) - int(startingX);
         actualDeltaY = int256(endingY) - int(startingY);
     }
 
     function swapPoolTokenForWethBasedonOutputWETH(uint256 outputWeth) public {
-        outputWeth = bound(outputWeth, 0, type(uint96).max);
+        uint256 minWeth = pool.getMinimumWethDepositAmount();
+        outputWeth = bound(outputWeth, minWeth, weth.balanceOf(address(pool)));
 
         if (outputWeth >= weth.balanceOf(address(pool))){
             return;
@@ -75,11 +77,11 @@ contract Handler is Test {
             return;
         }
 
-        startingX = int256(token.balanceOf(address(this)));
-        startingY = int256(weth.balanceOf(address(this)));
+        startingX = int256(token.balanceOf(address(pool)));
+        startingY = int256(weth.balanceOf(address(pool)));
 
         expectedDeltaY = -1 * int256(outputWeth);
-        expectedDeltaX = int256(pool.getPoolTokensToDepositBasedOnWeth(pooltokenamount));
+        expectedDeltaX = int256(pooltokenamount);
 
         if (token.balanceOf(swapper) < pooltokenamount) {
             token.mint(swapper,pooltokenamount - token.balanceOf(swapper) + 1);
@@ -94,10 +96,10 @@ contract Handler is Test {
 
 
         // actual
-        uint256 endingY = weth.balanceOf(address(this));
-        uint256 endingX = token.balanceOf(address(this));
+        uint256 endingY = weth.balanceOf(address(pool));
+        uint256 endingX = token.balanceOf(address(pool));
 
-        actualDeltaX = int256(endingX) - int(startingX);
-        actualDeltaY = int256(endingY) - int(startingY);
+        actualDeltaX = int256(endingX) - int256(startingX);
+        actualDeltaY = int256(endingY) - int256(startingY);
     }
 }
