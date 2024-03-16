@@ -8,6 +8,14 @@
 
 --> In Stateless fuzzing the state of the previous run is discarded for every new run and in StateFull fuzzing the final state of the previous fuzz run is used as the starting state for the current fuzz test
 
+--> In Stateful Fuzzing there are 2 differnet types  of tests:
+   i) Open Test - where we start with an empty state, and use the targetContract key word in foundry test imported from the 'forge-std/StdInvariant.sol' and specify the target contract address init. now when we test it will run a random sequece of function calls and then call the function on the test contract to check the assertion 
+
+   ii) Handler Test - This is similar to the open test, but here we have a middleman contract called the handler which which will have functions which internally call the target contract functions and can combine multiple function calls into a single function and then the call can be made. The main advantage and the different between open and handler is that using the handler function as an intermediary caller we can reduce unnecessary function calls and just call the needed function basically helping to make a more precise function call. One Big Gotch is that u must not limit a lot functions as that could effect ur result.
+
+   
+
+
 
 # Important Points in Audits:
 
