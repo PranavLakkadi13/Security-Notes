@@ -19,15 +19,16 @@ import { IERC20 } from "forge-std/interfaces/IERC20.sol";
 
 contract PoolFactory {
     error PoolFactory__PoolAlreadyExists(address tokenAddress);
+//    @audit-info this error is not used
     error PoolFactory__PoolDoesNotExist(address tokenAddress);
 
     /*//////////////////////////////////////////////////////////////
                             STATE VARIABLES
     //////////////////////////////////////////////////////////////*/
-    mapping(address token => address pool) private s_pools;
-    mapping(address pool => address token) private s_tokens;
+    mapping(address token => address pool) private s_pools; // e token to the deployed pool
+    mapping(address pool => address token) private s_tokens;  // e pool to the token
 
-    address private immutable i_wethToken;
+    address private immutable i_wethToken; // e by default all pools are w.r.t to eeth
 
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
@@ -38,18 +39,24 @@ contract PoolFactory {
                                FUNCTIONS
     //////////////////////////////////////////////////////////////*/
     constructor(address wethToken) {
+        // @audit-info lacking an address 0 check
         i_wethToken = wethToken;
     }
 
     /*//////////////////////////////////////////////////////////////
                            EXTERNAL FUNCTIONS
     //////////////////////////////////////////////////////////////*/
+    // e so this is like the token address given to create Token/Weth pool
     function createPool(address tokenAddress) external returns (address) {
         if (s_pools[tokenAddress] != address(0)) {
             revert PoolFactory__PoolAlreadyExists(tokenAddress);
         }
+        // q what if the name call reverts ??
         string memory liquidityTokenName = string.concat("T-Swap ", IERC20(tokenAddress).name());
+
+        // @audit-info Incorrect IERC20 call made, calling name() instead of symbol()
         string memory liquidityTokenSymbol = string.concat("ts", IERC20(tokenAddress).name());
+
         TSwapPool tPool = new TSwapPool(tokenAddress, i_wethToken, liquidityTokenName, liquidityTokenSymbol);
         s_pools[tokenAddress] = address(tPool);
         s_tokens[address(tPool)] = tokenAddress;
