@@ -131,7 +131,7 @@ Most simply put, the protocol's core invariant is broken.
 
 Place the following into `TSwapPool.t.sol`.
 
-```javascript
+```solidity
 
     function testInvariantBroken() public {
         vm.startPrank(liquidityProvider);
