@@ -10,7 +10,7 @@ seed = "0x1"
 
 [invariant]
 runs = 1000
-depth = 32
+depth = 50
 fail_on_revert = true
 
 [fmt]
