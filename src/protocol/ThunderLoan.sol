@@ -311,14 +311,14 @@ contract ThunderLoan is
         }
     }
 
+    // @audit need to verify the price data from the oracle and does it consider decimals ??
     function getCalculatedFee(
         IERC20 token,
         uint256 amount
     ) public view returns (uint256 fee) {
-        //slither-disable-next-line divide-before-multiply
+        // @audit-info if the fee is in weth how do we get value in usd ??
         uint256 valueOfBorrowedToken = (amount *
             getPriceInWeth(address(token))) / s_feePrecision;
-        //slither-disable-next-line divide-before-multiply
         fee = (valueOfBorrowedToken * s_flashLoanFee) / s_feePrecision;
     }
 
