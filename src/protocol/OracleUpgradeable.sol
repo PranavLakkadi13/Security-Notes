@@ -6,8 +6,10 @@ import {IPoolFactory} from "../interfaces/IPoolFactory.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract OracleUpgradeable is Initializable {
+    // @audit low - can be marked immutable and i_poolFactory can be the new name 
     address private s_poolFactory;
 
+    // e this acts like a constructor for upgradeable contracts
     function __Oracle_init(
         address poolFactoryAddress
     ) internal onlyInitializing {
@@ -20,6 +22,7 @@ contract OracleUpgradeable is Initializable {
         s_poolFactory = poolFactoryAddress;
     }
 
+    //  q: can the price of the pool be manipulated by users 
     function getPriceInWeth(address token) public view returns (uint256) {
         address swapPoolOfToken = IPoolFactory(s_poolFactory).getPool(token);
         return ITSwapPool(swapPoolOfToken).getPriceOfOnePoolTokenInWeth();

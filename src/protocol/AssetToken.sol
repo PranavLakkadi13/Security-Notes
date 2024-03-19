@@ -21,6 +21,9 @@ contract AssetToken is ERC20 {
     // The underlying per asset exchange rate
     // ie: s_exchangeRate = 2
     // means 1 asset token is worth 2 underlying tokens
+    
+    // e assetToken = shares 
+    // e underlying = collateral(token deposited eg. DAI, USDC, USDT, etc.)
     uint256 private s_exchangeRate;
     uint256 public constant EXCHANGE_RATE_PRECISION = 1e18;
     uint256 private constant STARTING_EXCHANGE_RATE = 1e18;
@@ -52,7 +55,9 @@ contract AssetToken is ERC20 {
     //////////////////////////////////////////////////////////////*/
     constructor(
         address thunderLoan,
-        IERC20 underlying,
+        // q: why is the underlying token passed, is to to help track the collateral/asset pool?
+        // q: where are the actual tokens deposited? is it in the thunderLoan contract?
+        IERC20 underlying, // it is the collateral token 
         string memory assetName,
         string memory assetSymbol
     )
@@ -62,6 +67,8 @@ contract AssetToken is ERC20 {
     {
         i_thunderLoan = thunderLoan;
         i_underlying = underlying;
+
+        // @audit - the exchange rate is set to 1:1 at deployment instead of 1:2
         s_exchangeRate = STARTING_EXCHANGE_RATE;
     }
 
@@ -74,6 +81,11 @@ contract AssetToken is ERC20 {
     }
 
     function transferUnderlyingTo(address to, uint256 amount) external onlyThunderLoan {
+        // q: weird ERC20s ?? like usdc is used 
+        // q: what happens if USDC blacklists the contract?
+        // q: what happens if USDC is upgraded to a new version?
+        // q: what happens if USDC is paused?
+        // q: @followup 
         i_underlying.safeTransfer(to, amount);
     }
 
@@ -82,10 +94,13 @@ contract AssetToken is ERC20 {
         // 2. How big the fee is should be divided by the total supply
         // 3. So if the fee is 1e18, and the total supply is 2e18, the exchange rate be multiplied by 1.5
         // if the fee is 0.5 ETH, and the total supply is 4, the exchange rate should be multiplied by 1.125
-        // it should always go up, never down
+        // it should always go up, never down //// INVARIENT
         // newExchangeRate = oldExchangeRate * (totalSupply + fee) / totalSupply
         // newExchangeRate = 1 (4 + 0.5) / 4
         // newExchangeRate = 1.125
+
+        // @audit what if the total supply is 0?
+        // @audit how does change in exchange rate midway affect the users?
         uint256 newExchangeRate = s_exchangeRate * (totalSupply() + fee) / totalSupply();
 
         if (newExchangeRate <= s_exchangeRate) {
