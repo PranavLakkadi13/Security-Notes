@@ -116,19 +116,17 @@
 
     2. static-call: Will be used to call functions that do not change the state of blockchain, its like the low-level version of the "view" or "pure functions"
 
-1.  Proxies are a great way to upgrade the code of the contract but they have inherit risks and other
-    vulnerabilites and if the only one entity can make an upgrade that is centrality.
+1. Proxies are a great way to upgrade the code of the contract but they have inherit risks and  other vulnerabilites and if the only one entity can make an upgrade that is centrality.
 
-    The big difference is that the proxy contract is the main contract that stores the data and the
-    implementation contract is the contract that has logic of the calls.
+    The big difference is that the proxy contract is the main contract that stores the data and the implementation contract is the contract that has logic of the calls.
 
-    The proxy internally uses delegatecall to read the internal details of the implentation and changes the
-    state in the proxy contract
+    The proxy internally uses delegatecall to read the internal details of the implentation and changes the state in the proxy contract
+
+    In Proxy u also have to remember that it wont have a constructor so u have to use the initialized method and as per openzeppelin you are converting a function to give it the 
+    features of the constructor and (NOTE: ALWAYS REMEMBER TO INITAILISE IT, IF U FAIL YOU CAN BE FRONTRUN!!!!) 
 
 1.  SelfDestruct is a keyword in solidity, it is used to self destruct the contract and 
-    remove the code from
-    the chain and send a eth locked in to a address forcefully
+    remove the code from the chain and send a eth locked in to a address forcefully
 
-    in the above example we can see that the contract in /src/SelfDestruct we have 2 contracts as example and see
-    that in the attack contract we have the selfdestruct function that destroys the contract and forecefully sends the ether into the game and increases the balance which leads to the depositors having their money locked
+    in the above example we can see that the contract in /src/SelfDestruct we have 2 contracts as example and see that in the attack contract we have the selfdestruct function that destroys the contract and forecefully sends the ether into the game and increases the balance which leads to the depositors having their money locked
     this attack function is now forcefully sending ether to the contract
