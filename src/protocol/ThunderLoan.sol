@@ -191,6 +191,8 @@ contract ThunderLoan is
         assetToken.mint(msg.sender, mintAmount);
 
         // @audit y is the exchange rate updated ?????
+        // @audit This is causing an error during redeem as the exchange rate is updated here
+        // This will cause the funds to be locked in the contract
         uint256 calculatedFee = getCalculatedFee(token, amount);
         assetToken.updateExchangeRate(calculatedFee);
 
