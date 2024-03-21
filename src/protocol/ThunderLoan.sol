@@ -270,6 +270,7 @@ contract ThunderLoan is
 
     // @audit-info where is the natspec for this function????
     // This looks fine to me
+    // @audit this function might not work if u have taken a flash loan
     function repay(IERC20 token, uint256 amount) public {
         if (!s_currentlyFlashLoaning[token]) {
             revert ThunderLoan__NotCurrentlyFlashLoaning();
