@@ -12,6 +12,7 @@ import {ERC20Mock} from "../mocks/ERC20mock.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {IFlashLoanReceiver} from "../../src/interfaces/IFlashLoanReceiver.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ThunderLoanUpgraded} from "../../src/upgradedProtocol/ThunderLoanUpgraded.sol";
 
 contract ThunderLoanTest is BaseTest {
     uint256 constant AMOUNT = 10e18;
@@ -240,7 +241,7 @@ contract ThunderLoanTest is BaseTest {
             tokenA,
             amountToBorrow
         );
-        DepositOverRepay depositOverRepay = new DepositOverRepay(thunderLoan);  
+        DepositOverRepay depositOverRepay = new DepositOverRepay(thunderLoan);
         tokenA.mint(address(depositOverRepay), calculatedFee);
         thunderLoan.flashloan(
             address(depositOverRepay),
@@ -251,7 +252,22 @@ contract ThunderLoanTest is BaseTest {
         depositOverRepay.redeemMoney();
         vm.stopPrank();
 
-        assert(tokenA.balanceOf(address(depositOverRepay)) >= 50e18 + calculatedFee);
+        assert(
+            tokenA.balanceOf(address(depositOverRepay)) >= 50e18 + calculatedFee
+        );
+    }
+
+    function testUpgradeFail() public {
+        uint256 feeBeforeUpgrade = thunderLoan.getFee();
+        vm.startPrank(thunderLoan.owner());
+        ThunderLoanUpgraded upgraded = new ThunderLoanUpgraded();
+        thunderLoan.upgradeToAndCall(address(upgraded), "");
+        uint256 feeAfterUpgrade = thunderLoan.getFee();
+        vm.stopPrank();
+
+        console.log("Fee Before Upgrade: ", feeBeforeUpgrade);
+        console.log("Fee After Upgrade: ", feeAfterUpgrade);
+        assert(feeBeforeUpgrade != feeAfterUpgrade);
     }
 }
 

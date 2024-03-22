@@ -57,6 +57,60 @@ function testRedeem() public setAllowedToken hasDeposits {
 **Description:** 
 
 
+### [H-3] Mixing up variable location causes storage collisions in `ThunderLoan::s_flashLoanFee` and `ThunderLoan::s_currentlyFlashLoaning`
+
+**Description:** `ThunderLoan.sol` has two variables in the following order:
+
+```javascript
+    uint256 private s_feePrecision;
+    uint256 private s_flashLoanFee; // 0.3% ETH fee
+```
+
+However, the expected upgraded contract `ThunderLoanUpgraded.sol` has them in a different order. 
+
+```javascript
+    uint256 private s_flashLoanFee; // 0.3% ETH fee
+    uint256 public constant FEE_PRECISION = 1e18;
+```
+
+Due to how Solidity storage works, after the upgrade, the `s_flashLoanFee` will have the value of `s_feePrecision`. You cannot adjust the positions of storage variables when working with upgradeable contracts. 
+
+
+**Impact:** After upgrade, the `s_flashLoanFee` will have the value of `s_feePrecision`. This means that users who take out flash loans right after an upgrade will be charged the wrong fee. Additionally the `s_currentlyFlashLoaning` mapping will start on the wrong storage slot.
+
+**Proof of Code:**
+
+<details>
+<summary>Code</summary>
+Add the following code to the `ThunderLoanTest.t.sol` file. 
+
+```javascript
+// You'll need to import `ThunderLoanUpgraded` as well
+import { ThunderLoanUpgraded } from "../../src/upgradedProtocol/ThunderLoanUpgraded.sol";
+
+function testUpgradeBreaks() public {
+        uint256 feeBeforeUpgrade = thunderLoan.getFee();
+        vm.startPrank(thunderLoan.owner());
+        ThunderLoanUpgraded upgraded = new ThunderLoanUpgraded();
+        thunderLoan.upgradeTo(address(upgraded));
+        uint256 feeAfterUpgrade = thunderLoan.getFee();
+
+        assert(feeBeforeUpgrade != feeAfterUpgrade);
+    }
+```
+</details>
+
+You can also see the storage layout difference by running `forge inspect ThunderLoan storage` and `forge inspect ThunderLoanUpgraded storage`
+
+**Recommended Mitigation:** Do not switch the positions of the storage variables on upgrade, and leave a blank if you're going to replace a storage variable with a constant. In `ThunderLoanUpgraded.sol`:
+
+```diff
+-    uint256 private s_flashLoanFee; // 0.3% ETH fee
+-    uint256 public constant FEE_PRECISION = 1e18;
++    uint256 private s_blank;
++    uint256 private s_flashLoanFee; 
++    uint256 public constant FEE_PRECISION = 1e18;
+```
 
 # Medium
 
@@ -93,4 +147,107 @@ function getCalculatedFee(
         uint256 fee = mintAmount * s_fee / 10000;
 
         // This is succeptible to price oracle attack
+```
+
+### [M-2]: 
+
+**Description:**
+
+If the 'ThunderLoan::setAllowedToken' function is called with the intention of setting an allowed token to false and thus deleting the assetToken to token mapping; nobody would be able to redeem funds of that token in the 'ThunderLoan::redeem' function and thus have them locked away without access.
+
+**Impact:**
+
+If the owner sets an allowed token to false, this deletes the mapping of the asset token to that ERC20. If this is done, and a liquidity provider has already deposited ERC20 tokens of that type, then the liquidity provider will not be able to redeem them in the 'ThunderLoan::redeem' function. 
+
+```solidity
+     function setAllowedToken(IERC20 token, bool allowed) external onlyOwner returns (AssetToken) {
+        if (allowed) {
+            if (address(s_tokenToAssetToken[token]) != address(0)) {
+                revert ThunderLoan__AlreadyAllowed();
+            }
+            string memory name = string.concat("ThunderLoan ", IERC20Metadata(address(token)).name());
+            string memory symbol = string.concat("tl", IERC20Metadata(address(token)).symbol());
+            AssetToken assetToken = new AssetToken(address(this), token, name, symbol);
+            s_tokenToAssetToken[token] = assetToken;
+            emit AllowedTokenSet(token, assetToken, allowed);
+            return assetToken;
+        } else {
+            AssetToken assetToken = s_tokenToAssetToken[token];
+@>          delete s_tokenToAssetToken[token];
+            emit AllowedTokenSet(token, assetToken, allowed);
+            return assetToken;
+        }
+    }
+```
+
+```solidity
+     function redeem(
+        IERC20 token,
+        uint256 amountOfAssetToken
+    )
+        external
+        revertIfZero(amountOfAssetToken)
+@>      revertIfNotAllowedToken(token)
+    {
+        AssetToken assetToken = s_tokenToAssetToken[token];
+        uint256 exchangeRate = assetToken.getExchangeRate();
+        if (amountOfAssetToken == type(uint256).max) {
+            amountOfAssetToken = assetToken.balanceOf(msg.sender);
+        }
+        uint256 amountUnderlying = (amountOfAssetToken * exchangeRate) / assetToken.EXCHANGE_RATE_PRECISION();
+        emit Redeemed(msg.sender, token, amountOfAssetToken, amountUnderlying);
+        assetToken.burn(msg.sender, amountOfAssetToken);
+        assetToken.transferUnderlyingTo(msg.sender, amountUnderlying);
+    }
+```
+
+## POC
+
+```solidity
+     function testCannotRedeemNonAllowedTokenAfterDepositingToken() public {
+        vm.prank(thunderLoan.owner());
+        AssetToken assetToken = thunderLoan.setAllowedToken(tokenA, true);
+
+        tokenA.mint(liquidityProvider, AMOUNT);
+        vm.startPrank(liquidityProvider);
+        tokenA.approve(address(thunderLoan), AMOUNT);
+        thunderLoan.deposit(tokenA, AMOUNT);
+        vm.stopPrank();
+
+        vm.prank(thunderLoan.owner());
+        thunderLoan.setAllowedToken(tokenA, false);
+
+        vm.expectRevert(abi.encodeWithSelector(ThunderLoan.ThunderLoan__NotAllowedToken.selector, address(tokenA)));
+        vm.startPrank(liquidityProvider);
+        thunderLoan.redeem(tokenA, AMOUNT_LESS);
+        vm.stopPrank();
+    }
+```
+
+## Recommendations
+
+It would be suggested to add a check if that assetToken holds any balance of the ERC20, if so, then you cannot remove the mapping.
+
+```diff
+     function setAllowedToken(IERC20 token, bool allowed) external onlyOwner returns (AssetToken) {
+        if (allowed) {
+            if (address(s_tokenToAssetToken[token]) != address(0)) {
+                revert ThunderLoan__AlreadyAllowed();
+            }
+            string memory name = string.concat("ThunderLoan ", IERC20Metadata(address(token)).name());
+            string memory symbol = string.concat("tl", IERC20Metadata(address(token)).symbol());
+            AssetToken assetToken = new AssetToken(address(this), token, name, symbol);
+            s_tokenToAssetToken[token] = assetToken;
+            emit AllowedTokenSet(token, assetToken, allowed);
+            return assetToken;
+        } else {
+            AssetToken assetToken = s_tokenToAssetToken[token];
++           uint256 hasTokenBalance = IERC20(token).balanceOf(address(assetToken));
++           if (hasTokenBalance == 0) {
+                delete s_tokenToAssetToken[token];
+                emit AllowedTokenSet(token, assetToken, allowed);
++           }
+            return assetToken;
+        }
+    }
 ```
