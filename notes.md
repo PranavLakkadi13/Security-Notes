@@ -125,6 +125,10 @@
     In Proxy u also have to remember that it wont have a constructor so u have to use the initialized method and as per openzeppelin you are converting a function to give it the 
     features of the constructor and (NOTE: ALWAYS REMEMBER TO INITAILISE IT, IF U FAIL YOU CAN BE FRONTRUN!!!!) 
 
+
+    Also an Important point to remember is that in the proxy contract u should have the data (storage variables) at the same storage slots as that in implementation contract else it could lead to storage collision like dont modify the storage slots in the proxy contract
+
+
 2.  SelfDestruct is a keyword in solidity, it is used to self destruct the contract and 
     remove the code from the chain and send a eth locked in to a address forcefully
 
