@@ -125,7 +125,7 @@
     In Proxy u also have to remember that it wont have a constructor so u have to use the initialized method and as per openzeppelin you are converting a function to give it the 
     features of the constructor and (NOTE: ALWAYS REMEMBER TO INITAILISE IT, IF U FAIL YOU CAN BE FRONTRUN!!!!) 
 
-1.  SelfDestruct is a keyword in solidity, it is used to self destruct the contract and 
+2.  SelfDestruct is a keyword in solidity, it is used to self destruct the contract and 
     remove the code from the chain and send a eth locked in to a address forcefully
 
     in the above example we can see that the contract in /src/SelfDestruct we have 2 contracts as example and see that in the attack contract we have the selfdestruct function that destroys the contract and forecefully sends the ether into the game and increases the balance which leads to the depositors having their money locked
