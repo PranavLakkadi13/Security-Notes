@@ -21,6 +21,8 @@ contract TokenFactory is Ownable {
      * @param contractBytecode The bytecode of the new token
      */
     function deployToken(string memory symbol, bytes memory contractBytecode) public onlyOwner returns (address addr) {
+        // @audit add a check to see the address returned is not address(0)
+        // @audit -High check if the bytecode is compatible on the l2 chain
         assembly {
             addr := create(0, add(contractBytecode, 0x20), mload(contractBytecode))
         }
