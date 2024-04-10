@@ -73,6 +73,8 @@ contract L1BossBridge is Ownable, Pausable, ReentrancyGuard {
         if (token.balanceOf(address(vault)) + amount > DEPOSIT_LIMIT) {
             revert L1BossBridge__DepositLimitReached();
         }
+        // The from from field should always be msg.sender to prevent front-running attacks
+        // @audit -High: if both from and to fields are same then the contrcat could mint unlimited tokens 
         token.safeTransferFrom(from, address(vault), amount);
 
         // Our off-chain service picks up this event and mints the corresponding tokens on L2

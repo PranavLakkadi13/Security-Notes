@@ -16,6 +16,7 @@ contract L1BossBridgeTest is Test {
     address deployer = makeAddr("deployer");
     address user = makeAddr("user");
     address userInL2 = makeAddr("userInL2");
+    address bob = makeAddr("bob");
     Account operator = makeAccount("operator");
 
     L1Token token;
@@ -36,6 +37,17 @@ contract L1BossBridgeTest is Test {
         // Add a new allowed signer to the bridge
         tokenBridge.setSigner(operator.addr, true);
 
+        vm.stopPrank();
+    }
+
+    function testFrontRun() public {
+        vm.startPrank(user);
+        uint256 amount = 10e18; 
+        token.approve(address(tokenBridge), amount);
+        uint256 x = token.balanceOf(address(user));
+        tokenBridge.depositTokensToL2(address(user), address(bob), amount);
+        uint256 y = token.balanceOf(address(user));
+        assert(x > y);
         vm.stopPrank();
     }
 
