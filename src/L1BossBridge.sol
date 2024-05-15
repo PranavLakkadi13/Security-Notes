@@ -74,7 +74,7 @@ contract L1BossBridge is Ownable, Pausable, ReentrancyGuard {
             revert L1BossBridge__DepositLimitReached();
         }
         // The from from field should always be msg.sender to prevent front-running attacks
-        // @audit -High: if both from and to fields are same then the contrcat could mint unlimited tokens 
+        // @audit -critical: if both from and to fields are same then the contract could mint unlimited tokens 
         token.safeTransferFrom(from, address(vault), amount);
 
         // Our off-chain service picks up this event and mints the corresponding tokens on L2
@@ -113,6 +113,8 @@ contract L1BossBridge is Ownable, Pausable, ReentrancyGuard {
      * @param s The s value of the signature
      * @param message The message/data to be sent to L1 (can be blank)
      */
+    // @audit -high: signature replay possible since the signature can be reused 
+    // signature replay attacks can be prevented by using a nonce
     function sendToL1(uint8 v, bytes32 r, bytes32 s, bytes memory message) public nonReentrant whenNotPaused {
         address signer = ECDSA.recover(MessageHashUtils.toEthSignedMessageHash(keccak256(message)), v, r, s);
 
@@ -122,6 +124,8 @@ contract L1BossBridge is Ownable, Pausable, ReentrancyGuard {
 
         (address target, uint256 value, bytes memory data) = abi.decode(message, (address, uint256, bytes));
 
+        // @audit -high: arbitrary call to external contract can lead to reentrancy attacks or gas burn 
+        // since the target contract can be malicious 
         (bool success,) = target.call{ value: value }(data);
         if (!success) {
             revert L1BossBridge__CallFailed();

