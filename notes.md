@@ -27,7 +27,7 @@
    mostly a High or Crit
    --> Second, look for external calls either .call{}() or a external contract call and see if that call fails how does it effect my system?
    Causes :- i) sending ether to a contract that does not accept it
-            ii) Caliing a function in a contract that doesnt exist
+            ii) Calling a function in a contract that doesnt exist
            iii) The external call execution runs out of gas (.send(), .transfer())
             iv) Third party contract is simply malicious
 
@@ -135,3 +135,19 @@
 
     in the above example we can see that the contract in /src/SelfDestruct we have 2 contracts as example and see that in the attack contract we have the selfdestruct function that destroys the contract and forecefully sends the ether into the game and increases the balance which leads to the depositors having their money locked
     this attack function is now forcefully sending ether to the contract
+
+
+ 3.  Decimal (Rounding Errors in Solidity):
+
+      In solidity there is no decimal data type and all the numbers are integers so if u want for example 0.5 i.e 
+      5/10 in python it is 0.5
+      in Solidity it is 5/10 = 0
+
+      to resolve this issue in ERC20 tokens we use the decimal variable to keep track of the decimal places and then multiply the value by 10^decimal to get the correct value 
+
+      rounding errors can be caused by the following reasons:-
+      i)  Division
+      ii) division after multiplication 
+
+      To avoid it its better to use the math lib so that in places u can rounddown or roundup the code when needed else by default it will rounddown the value
+      
