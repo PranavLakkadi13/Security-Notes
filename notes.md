@@ -151,3 +151,22 @@
 
       To avoid it its better to use the math lib so that in places u can rounddown or roundup the code when needed else by default it will rounddown the value
       
+ 4. Signature Replay (Malleability):
+
+      Signature malleability is a property of some signature schemes that allows an attacker to change a valid signature into another signature that is valid for the same message.
+
+      The SECP256k1 curve :
+         is a group of points on an elliptic curve that is used in the ECDSA signature scheme. The curve is defined by the equation y^2 = x^3 + 7(mod p). The curve is defined over the field of integers modulo a prime number p = 2^256 - 2^32 - 977. The curve has a base point G = (0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798, 
+         
+         0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8) and a prime order n = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141. 
+
+      The SECP256k1 curve has a property called signature malleability. This means that for a given message and private key, there are two valid signatures that can be generated.
+
+      As you know the equation forms a curve and the public key is a point on the curve 
+      eA = (X,Y) i.e the A is the generator point and the e is the large prime number also the private key and the points (X,Y) are the public key
+
+      so for the generation of a signature a temporary key is generated and the point is calculated on the curve and the X coordinate is taken as the R value and the Y coordinate is taken as the S value
+
+
+      To avoid this u can use the openzeppelin ECDSA library to validate the signature or use a unique nonce for each signature so that only a single signature is valid for a single nonce
+     
