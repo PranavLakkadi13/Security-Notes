@@ -170,3 +170,14 @@
 
       To avoid this u can use the openzeppelin ECDSA library to validate the signature or use a unique nonce for each signature so that only a single signature is valid for a single nonce
      
+
+
+5. Proxies or Upgradeable Contracts: 
+
+      4 Methods to upgrade a contract :-
+         1) Eternal Storage
+         2) Transparent Proxy
+         3) Universal Upgardable Proxy
+         4) Diamond Proxy 
+
+      1) Eternal Storage:- Its Basically a method that seperates the logic contract and the data    storage contract 
