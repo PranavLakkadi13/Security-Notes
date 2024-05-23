@@ -126,8 +126,33 @@
     In Proxy u also have to remember that it wont have a constructor so u have to use the initialized method and as per openzeppelin you are converting a function to give it the 
     features of the constructor and (NOTE: ALWAYS REMEMBER TO INITAILISE IT, IF U FAIL YOU CAN BE FRONTRUN!!!!) 
 
-
     Also an Important point to remember is that in the proxy contract u should have the data (storage variables) at the same storage slots as that in implementation contract else it could lead to storage collision like dont modify the storage slots in the proxy contract
+
+
+  * Overview of Delegate Call :-
+      It is used to preserve the function call values and is supplied to another contract to execute the function call, used in the proxies and the preserved state is used in the implementation contract where the logic is there but the data is updated in the proxy contract
+
+
+
+   4 Methods to upgrade a contract :-
+         1) Eternal Storage
+         2) Transparent Proxy
+         3) Universal Upgardable Proxy
+         4) Diamond Proxy 
+
+      1) Eternal Storage:- Its Basically a method that seperates the logic contract and the data    storage contract 
+
+      The Data contract stores the data and the state of the logic where as the logic contract just has the logic of the changes to be made on the data contract and only the logic contract can make changes to the data contract. 
+
+      2) Transparent Proxy:- Its a type of proxy methodology where we have the proxy contract and the implementation contract and the proxy contract uses the delegatecall to call the implementation contract and the implementation contract has the logic of the calls and the proxy contract has the data storage and the data storage is stored in the proxy contract 
+
+      eg:- if the logic in the implementation is that the value updated will be stored in the storage slot 2, then the value is stored in the storage slot 2 of the proxy contract. 
+
+      NOTE :- The storage slots of the proxy contract and the implementation contract should be the same else it could lead to storage collision.
+      
+      Also note that the transparent proxy has a specific storage slot to store the implementation contract address according to the EIP1967 standard
+      
+      Also only the owner can change the implementation contract address of the proxy contract it is preferred to use the proxy admin contract to change the implementation contract address
 
 
 2.  SelfDestruct is a keyword in solidity, it is used to self destruct the contract and 
@@ -171,13 +196,4 @@
       To avoid this u can use the openzeppelin ECDSA library to validate the signature or use a unique nonce for each signature so that only a single signature is valid for a single nonce
      
 
-
-5. Proxies or Upgradeable Contracts: 
-
-      4 Methods to upgrade a contract :-
-         1) Eternal Storage
-         2) Transparent Proxy
-         3) Universal Upgardable Proxy
-         4) Diamond Proxy 
-
-      1) Eternal Storage:- Its Basically a method that seperates the logic contract and the data    storage contract 
+      
