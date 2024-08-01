@@ -22,3 +22,6 @@
 [submodule "tincho_practice/lib/forge-std"]
 	path = tincho_practice/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "8-Horse-Store/lib/forge-std"]
+	path = 8-Horse-Store/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
