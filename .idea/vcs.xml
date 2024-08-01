@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/chainlink-brownie-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/foundry-devops" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/foundry-devops/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/foundry-devops/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/openzeppelin-contracts/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3-passwordstore-audit/lib/openzeppelin-contracts/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/4-puppy-raffle-audit" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/4-puppy-raffle-audit/lib/base64" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/4-puppy-raffle-audit/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/4-puppy-raffle-audit/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/4-puppy-raffle-audit/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/5-t-swap-audit" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/5-t-swap-audit/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/5-t-swap-audit/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/5-t-swap-audit/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/5-t-swap-audit/lib/openzeppelin-contracts/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/5-t-swap-audit/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/5-t-swap-audit/lib/openzeppelin-contracts/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts-upgradeable" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts-upgradeable/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts-upgradeable/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts-upgradeable/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/6-thunder-loan-audit/lib/openzeppelin-contracts/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/7-boss-bridge-audit" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/7-boss-bridge-audit/0-no-commit/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/7-boss-bridge-audit/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/7-boss-bridge-audit/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/7-boss-bridge-audit/lib/openzeppelin-contracts/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/7-boss-bridge-audit/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/7-boss-bridge-audit/lib/openzeppelin-contracts/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/basic-solc-project/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/basic-solc-project/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/basic-solc-project/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/basic-solc-project/lib/openzeppelin-contracts/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/basic-solc-project/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/basic-solc-project/lib/openzeppelin-contracts/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/exploits-minimized" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/exploits-minimized/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/exploits-minimized/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/exploits-minimized/lib/kontrol-cheatcodes" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/exploits-minimized/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/exploits-minimized/lib/openzeppelin-contracts/lib/erc4626-tests" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/exploits-minimized/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/exploits-minimized/lib/openzeppelin-contracts/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tincho_practice/lib/forge-std" vcs="Git" />
+  </component>
+</project>

@@ -144,15 +144,21 @@
 
       The Data contract stores the data and the state of the logic where as the logic contract just has the logic of the changes to be made on the data contract and only the logic contract can make changes to the data contract. 
 
-      2) Transparent Proxy:- Its a type of proxy methodology where we have the proxy contract and the implementation contract and the proxy contract uses the delegatecall to call the implementation contract and the implementation contract has the logic of the calls and the proxy contract has the data storage and the data storage is stored in the proxy contract 
+
+      2) Transparent Proxy:- Its a type of proxy methodology where we have the proxy contract and the implementation contract and the proxy contract uses the delegatecall to call the implementation contract and the implementation contract has the logic of the calls and the proxy contract has the data storage and the data storage is stored in the proxy contract
+
+      It is important to note that the storage data types and the positioning in the proxy and the implementation contract should be the same else it could lead to storage collision
 
       eg:- if the logic in the implementation is that the value updated will be stored in the storage slot 2, then the value is stored in the storage slot 2 of the proxy contract. 
 
-      NOTE :- The storage slots of the proxy contract and the implementation contract should be the same else it could lead to storage collision.
+      NOTE :- Also other issues include function selector clashes where the function selector of the proxy contract and the implementation contract are the same , in that case the function call will be made in the proxy contract and not the implementation contract
       
       Also note that the transparent proxy has a specific storage slot to store the implementation contract address according to the EIP1967 standard
       
       Also only the owner can change the implementation contract address of the proxy contract it is preferred to use the proxy admin contract to change the implementation contract address
+
+
+      3) Universal Upgradable Proxy:- 
 
 
 2.  SelfDestruct is a keyword in solidity, it is used to self destruct the contract and 
@@ -176,6 +182,7 @@
 
       To avoid it its better to use the math lib so that in places u can rounddown or roundup the code when needed else by default it will rounddown the value
       
+ 
  4. Signature Replay (Malleability):
 
       Signature malleability is a property of some signature schemes that allows an attacker to change a valid signature into another signature that is valid for the same message.
