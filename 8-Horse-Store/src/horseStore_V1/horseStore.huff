@@ -24,8 +24,29 @@
     // update == 0x67d41eca
     // read == 0xfe7e1be3
 
-    0x67d41eca         // [0x67d41eca, function selector]
-    eq                 // [bool_of_eq]
+    dup1               // [function selector, function selector]
+
+    0x67d41eca         // [0x67d41eca, function selector, function selector]
+    eq                 // [bool_of_eq, function selector]
+
+    updateJump         // [updateHorseSToreProgramCounter, bool_of_eq, function selector]
+    jumpi              // [function selector]
+
+    // this is called jumpDest opcode (jump is like the switch case) jumpdest is performed after valid jumpi is performed
+    // if the jumpi is not valid then the jumpdest is not performed
+    //  The code could have also be done like this
+    //  0x000f
+    //  jumpi
+    //
+    //  jumpDest
+    //
+
+    updateJump:
+        SET_NUMBER_OF_HORSES()
+}
+
+#define macro SET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+
 }
 
 // 0b0000000000010000
