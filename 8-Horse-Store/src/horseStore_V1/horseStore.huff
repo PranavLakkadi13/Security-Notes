@@ -3,7 +3,7 @@
 // 60 00 80 60 09 3d 39 3d f3   this is the bytecode only for the main takes and returns (creation code)
 // 60 04 80 60 09 3d 39 3d f3 5f
 #define macro MAIN() = takes(0) returns(0) {
-    0x0               // [0]
+    0x00               // [0]
 
     // if the instead of push0 it was push1 it was used that value as an offset and cut the first byte of calldata and load
     // ----------                                                              --
@@ -13,6 +13,19 @@
     // now with the previous push0 in the stack it will read the whole calldata if it was push1 it will read the calldata
     // from the second byte that is skipping 0x67 instead of just 0x
 
+    calldataload       // [calldata(32)]
 
-    calldataload       // [calldata]
+    0xe0               // [0xe0, calledata(32)]
+
+    shr                // [function selector]  // shift right 224 bits (28 bytes) to get the function selector since first 4 bytes is function selector
+
+    // here now once the function selector is retrieved we are supposed to find and see which function to call
+    // use the JUMP opcode to jump to the function to be called using the selector and execute the code
+    // update == 0x67d41eca
+    // read == 0xfe7e1be3
+
+    0x67d41eca         // [0x67d41eca, function selector]
+    eq                 // [bool_of_eq]
 }
+
+// 0b0000000000010000
