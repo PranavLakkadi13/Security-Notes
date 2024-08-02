@@ -1,0 +1,18 @@
+// this
+
+// 60 00 80 60 09 3d 39 3d f3   this is the bytecode only for the main takes and returns (creation code)
+// 60 04 80 60 09 3d 39 3d f3 5f
+#define macro MAIN() = takes(0) returns(0) {
+    0x0               // [0]
+
+    // if the instead of push0 it was push1 it was used that value as an offset and cut the first byte of calldata and load
+    // ----------                                                              --
+    // func selector                                                           data passed as args
+    // 0x67d41eca0000000000000000000000000000000000000000000000000000000000000001 --> the calldata used to call update function
+    // in the horseStore contract
+    // now with the previous push0 in the stack it will read the whole calldata if it was push1 it will read the calldata
+    // from the second byte that is skipping 0x67 instead of just 0x
+
+
+    calldataload       // [calldata]
+}
