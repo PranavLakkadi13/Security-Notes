@@ -2,6 +2,20 @@
 
 // 60 00 80 60 09 3d 39 3d f3   this is the bytecode only for the main takes and returns (creation code)
 // 60 04 80 60 09 3d 39 3d f3 5f
+
+
+
+// HUFF has a method to check the function selector instead of manually using cast and getting the function selector
+// It is done using the __FUNC_SIG() syntax of huff and pass the function name in the interface defined below
+// it will create the function selector using the defined function name in the interface
+
+/* Interface */
+#define function updateNumberOfHorses(uint256) nonpayable returns ()
+#define function getNumberOfHorses() view returns (uint256)
+
+// The below case we could have also done the same directly by assigning the slot ==> 0x00
+#define constant NUMBER_OF_HORSES_STORAGE_SLOT = FREE_STORAGE_POINTER() // storage slot that is free, in this case it is 0
+
 #define macro MAIN() = takes(0) returns(0) {
     0x00               // [0]
 
@@ -26,7 +40,8 @@
 
     dup1               // [function selector, function selector]
 
-    0x67d41eca         // [0x67d41eca, function selector, function selector]
+    // 0x67d41eca         // [0x67d41eca, function selector, function selector]
+    __FUNC_SIG(updateNumberOfHorses)   // [0x67d41eca, function selector, function selector]
     eq                 // [bool_of_eq, function selector]
 
     updateJump         // [updateHorseSToreProgramCounter, bool_of_eq, function selector]
@@ -41,12 +56,58 @@
     //  jumpDest
     //
 
+    //    0xfe7e1be3         // [0xfe7e1be3, function selector]
+    __FUNC_SIG(getNumberOfHorses)   // [0xfe7e1be3, function selector]
+
+    eq                 // [bool_of_eq]
+
+    readJump           // [readHorseStoreProgramCounter, bool_of_eq]
+    jumpi              // []
+
+    0x00               // [0x00]  this is the offset that is taken from the calldata, anything inside can be returned as revert message in memory
+    0x00               // [0x00, 0x00]
+    revert             // []
+
+
     updateJump:
         SET_NUMBER_OF_HORSES()
+
+    readJump:
+        GET_NUMBER_OF_HORSES()
 }
 
 #define macro SET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+    // first need to get the calldata value
+    // we will keep the first 4 bytes offset and take the calldata after the first 4 bytes i.e after the func selector
+    0x04                                       // [function selector]
+    calldataload                               // [calldata(value), function selector]
 
+    // second need to get the storage slot
+    [NUMBER_OF_HORSES_STORAGE_SLOT]           // [storage slot, calldata(value), function selector]
+
+    // use the sstore to store the value in the storage slot
+    sstore                                    // []
+    stop
+}
+
+#define macro GET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+    /*
+    [NUMBER_OF_HORSES_STORAGE_SLOT]           // [storage slot]
+    sload
+    stop
+
+    This code works but the only issue is that it works but it loads the value onto stack and does not return it
+    so the problem is that for the user to access the value it has to be loaded to memory and returned to the user
+    */
+
+    [NUMBER_OF_HORSES_STORAGE_SLOT]           // [storage slot]
+    sload                                     // [value]
+    0x00                                      // [0x00,value]
+    mstore                                    // [0]  Memory: [value]
+
+    0x20                                      // [0]    [0x20,value]
+    0x00                                      // [0]    [0x00,0x20,value]
+    return
 }
 
 // 0b0000000000010000
