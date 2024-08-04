@@ -8,6 +8,6 @@ import {HuffDeployer} from "foundry-huff/HuffDeployer.sol";
 
 contract HorseStoreHuff is Base_TestV1 {
     function setUp() public override {
-
+        s_horseStore = horseStore(HuffDeployer.config().deploy("horseStore_V1/horseStore"));
     }
 }

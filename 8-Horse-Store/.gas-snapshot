@@ -1,0 +1,4 @@
+HorseStoreHuff:testReadNumberOfHorses() (gas: 10292)
+HorseStoreHuff:testUpdateNumberOfHorses(uint256) (runs: 256, μ: 30742, ~: 31053)
+HorseStoreSolc:testReadNumberOfHorses() (gas: 10390)
+HorseStoreSolc:testUpdateNumberOfHorses(uint256) (runs: 256, μ: 30985, ~: 31296)

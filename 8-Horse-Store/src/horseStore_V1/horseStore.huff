@@ -44,7 +44,7 @@
     __FUNC_SIG(updateNumberOfHorses)   // [0x67d41eca, function selector, function selector]
     eq                 // [bool_of_eq, function selector]
 
-    updateJump         // [updateHorseSToreProgramCounter, bool_of_eq, function selector]
+    updateJump         // [updateHorseStoreProgramCounter, bool_of_eq, function selector]
     jumpi              // [function selector]
 
     // this is called jumpDest opcode (jump is like the switch case) jumpdest is performed after valid jumpi is performed

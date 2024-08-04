@@ -47,6 +47,11 @@
     <mapping directory="$PROJECT_DIR$/7-boss-bridge-audit/lib/openzeppelin-contracts/lib/forge-std" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/7-boss-bridge-audit/lib/openzeppelin-contracts/lib/forge-std/lib/ds-test" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/8-Horse-Store/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/8-Horse-Store/lib/foundry-huff" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/8-Horse-Store/lib/foundry-huff/lib/forge-std" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/8-Horse-Store/lib/foundry-huff/lib/forge-std/lib/ds-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/8-Horse-Store/lib/foundry-huff/lib/solidity-stringutils" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/8-Horse-Store/lib/foundry-huff/lib/solidity-stringutils/lib/ds-test" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/basic-solc-project/lib/forge-std" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/basic-solc-project/lib/forge-std/lib/ds-test" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/basic-solc-project/lib/openzeppelin-contracts" vcs="Git" />

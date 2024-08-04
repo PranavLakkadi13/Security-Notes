@@ -6,7 +6,7 @@ import {Test,console2} from "forge-std/Test.sol";
 
 
 abstract contract Base_TestV1 is Test {
-    horseStore private s_horseStore;
+    horseStore public s_horseStore;
 
     function setUp() public virtual {
         s_horseStore = new horseStore();
@@ -15,5 +15,11 @@ abstract contract Base_TestV1 is Test {
     function testReadNumberOfHorses() public {
         uint256 initial = s_horseStore.getNumberOfHorses();
         assertEq(initial, 0);
+    }
+
+    function testUpdateNumberOfHorses(uint256 num) public {
+        s_horseStore.updateNumberOfHorses(num);
+        uint256 updated = s_horseStore.getNumberOfHorses();
+        assertEq(updated, num);
     }
 }
