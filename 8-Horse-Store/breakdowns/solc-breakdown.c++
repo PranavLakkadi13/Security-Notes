@@ -93,6 +93,7 @@ DUP1            // [0x00, 0x00]  Memory: [0x40 -> 0x80]
 REVERT          // []  Memory: [0x40 -> 0x80]
 
 // This is the jump destination for the update horse function (part 1)
+// most of this part sets up the program counters
 JUMPDEST        // [func_selector]  Memory: [0x40 -> 0x80]
 PUSH1 0x43      // [0x43, func_selector]  Memory: [0x40 -> 0x80]
 PUSH1 0x3f      // [0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
@@ -102,11 +103,14 @@ PUSH1 0x59      // [0x59, 0x04, calldata_size, 0x3f, 0x43, func_selector]  Memor
 // This opcode basically jumps to the most recently pushed value on stack which is a program counter
 JUMP            // [0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
 
-JUMPDEST
-PUSH0
-SSTORE
-JUMP
-JUMPDEST
+// This is the jump destination for the update horse function (part 4)
+JUMPDEST        // [calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+PUSH0           // [0x00, calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+SSTORE          // [0x43, func_selector]  Memory: [0x40 -> 0x80] Storage: [0x00 -> calldata_minus_func_selector]
+JUMP            // [func_selector]  Memory: [0x40 -> 0x80]
+
+// This is the jump destination for the update horse function (part 5)
+JUMPDEST        // [func_selector]  Memory: [0x40 -> 0x80]
 STOP
 JUMPDEST
 PUSH0
@@ -139,21 +143,24 @@ ISZERO              // [calldata_size - 0x04 < 0x20 == true, 0x00, 0x04, calldat
 // if the calldata size is less than 32 bytes then it jumps to the jump destination 0x68 (program counter)
 // that looks like if the data size is bigger than 32bytes it will revert due to overflow of memory
 PUSH1 0x68          // [0x68, calldata_size - 0x04 < 0x20 == true, 0x00, 0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+// if the bool returned is 1 then jump else , continue the execution till revert 3 opcodes later
+JUMPI               //  [0x00, 0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
 
 
-JUMPI
-PUSH0
-DUP1
-REVERT
+PUSH0               // [0x00, 0x00, 0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+DUP1                // [0x00, 0x00, 0x00, 0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+REVERT              // [0x00, 0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
 
 
-JUMPDEST
-POP
-CALLDATALOAD
-SWAP2
-SWAP1
-POP
-JUMP
+// This is the jump destination for the update horse function (part 3)
+// the main aim was to grab the call data to update the horse store variable
+JUMPDEST            //  [0x00, 0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+POP                 //  [0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+CALLDATALOAD        //  [calldata_minus_func_selector, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+SWAP2               //  [0x3f, calldata_size, calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+SWAP1               //  [calldata_size, 0x3f, calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+POP                 //  [0x3f, calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
+JUMP                //  [calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
 INVALID
 LOG2
 PUSH5 0x6970667358
