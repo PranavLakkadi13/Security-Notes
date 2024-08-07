@@ -107,28 +107,32 @@ JUMP            // [0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x
 JUMPDEST        // [calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
 PUSH0           // [0x00, calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
 SSTORE          // [0x43, func_selector]  Memory: [0x40 -> 0x80] Storage: [0x00 -> calldata_minus_func_selector]
-JUMP            // [func_selector]  Memory: [0x40 -> 0x80]
+JUMP            // [func_selector]  Memory: [0x40 -> 0x80] Storage: [0x00 -> calldata_minus_func_selector]
 
 // This is the jump destination for the update horse function (part 5)
-JUMPDEST        // [func_selector]  Memory: [0x40 -> 0x80]
-STOP
-JUMPDEST
-PUSH0
-SLOAD
-PUSH1 0x40
-MLOAD
-SWAP1
-DUP2
-MSTORE
-PUSH1 0x20
-ADD
-PUSH1 0x40
-MLOAD
-DUP1
-SWAP2
-SUB
-SWAP1
-RETURN
+JUMPDEST        // [func_selector]  Memory: [0x40 -> 0x80]  Storage: [0x00 -> calldata_minus_func_selector]
+STOP            // [func_selector]  Memory: [0x40 -> 0x80] Storage: [0x00 -> calldata_minus_func_selector]
+
+// This is the jump destination for read horse number
+JUMPDEST            // [func selector]  Memory: [0x40 -> 0x80]
+PUSH0               // [0x00, func selector]  Memory: [0x40 -> 0x80]
+SLOAD               // [horse number, func selector]  Memory: [0x40 -> 0x80]
+PUSH1 0x40          // [0x40, horse number, func selector]  Memory: [0x40 -> 0x80]
+MLOAD               // [0x80, horse number, func selector]  Memory: [0x40 -> 0x80]
+SWAP1               // [horse number, 0x80, func selector]  Memory: [0x40 -> 0x80]
+DUP2                // [0x80, horse number, 0x80, func selector]  Memory: [0x40 -> 0x80]
+MSTORE              // [0x80, func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
+PUSH1 0x20          // [0x20, 0x80, func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
+ADD                 // [0xa0, func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
+PUSH1 0x40          // [0x40, 0xa0, func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
+MLOAD               // [0x80, 0xa0, func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
+DUP1                // [0x80, 0x80, 0xa0, func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
+SWAP2               // [0xa0, 0x80, 0x80, func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
+SUB                 // [0x20, 0x80, func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
+SWAP1               // [0x80, 0x20, func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
+// the returns see which location in memory to read from and the size of memory to return back
+// the 0x80 is the memory slot and the the data data storage uses 32 bytes size so 0x20 is the size
+RETURN              // [func selector]  Memory: [0x40 -> 0x80, 0x80 -> horse number]
 
 // This is the jump destination for the update horse function (part 2)
 JUMPDEST            // [0x04, calldata_size, 0x3f, 0x43, func_selector]  Memory: [0x40 -> 0x80]
