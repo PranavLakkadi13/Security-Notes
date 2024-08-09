@@ -166,6 +166,8 @@ SWAP1               //  [calldata_size, 0x3f, calldata_minus_func_selector, 0x43
 POP                 //  [0x3f, calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
 JUMP                //  [calldata_minus_func_selector, 0x43, func_selector]  Memory: [0x40 -> 0x80]
 INVALID
+
+// this part is the metadata
 LOG2
 PUSH5 0x6970667358
 INVALID

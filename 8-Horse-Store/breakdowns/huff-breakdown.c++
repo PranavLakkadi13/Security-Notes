@@ -5,6 +5,8 @@ RETURNDATASIZE
 CODECOPY
 RETURNDATASIZE
 RETURN
+
+// This is the runtime code
 PUSH0
 CALLDATALOAD
 PUSH1 0xe0
@@ -21,12 +23,16 @@ JUMPI
 PUSH0
 PUSH0
 REVERT
+
+// this is the code for updateHorseNumber
 JUMPDEST
 PUSH1 0x04
 CALLDATALOAD
 PUSH0
 SSTORE
 STOP
+
+// This is the code readHorseNumber
 JUMPDEST
 PUSH0
 SLOAD
