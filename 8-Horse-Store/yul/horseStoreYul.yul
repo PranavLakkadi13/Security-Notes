@@ -2,7 +2,6 @@
 //  603680600a5f395ff3fe5f3560e01c806367d41eca1460245763fe7e1be314601b575f80fd5b5f545f5260205ff35b602436106032576004355f55005b5f80fd
 
 
-
 object "horseStoreYul" {
     code {
         // contract deployment code

@@ -28,3 +28,6 @@
 [submodule "8-Horse-Store/lib/foundry-huff"]
 	path = 8-Horse-Store/lib/foundry-huff
 	url = https://github.com/huff-language/foundry-huff
+[submodule "8-Horse-Store/lib/openzeppelin-contracts"]
+	path = 8-Horse-Store/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
