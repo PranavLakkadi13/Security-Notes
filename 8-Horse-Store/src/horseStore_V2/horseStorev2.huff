@@ -1,0 +1,120 @@
+/*
+  The functions that we need are:
+        mintHorse()  ->  0x61fc6a67
+        feedHorse(uint256 horseId)  -> 0xc65e2eaa
+        isHappyHorse(uint256 horseId)  -> 0x62134726
+        horseIdToFedTimeStamp(uint256 horseId)  -> 0xf163af78
+        HORSE_HAPPY_IF_FED_WITHIN  -> 0x8c1d96ae
+*/
+
+
+/* Interfaces */
+#define function mintHorse() nonpayable returns ()
+#define function feedHorse(uint256 horseId) nonpayable returns ()
+#define function isHappyHorse(uint256 horseId) view returns (bool)
+#define function horseIdToFedTimeStamp(uint256 horseId) view returns (uint256)
+#define function HORSE_HAPPY_IF_FED_WITHIN() view returns (uint256)
+
+
+// the takes is basically what the functions takes from the stack and returns is what is returned back on stack
+#define macro MAIN() = takes(0) returns(0) {
+
+    // this part is to see if the msg.value is 0
+    callvalue       // [msg.value]
+    iszero          // [msg.value = 0]
+    iszero          // [bool == 0]
+    func_Revert   // [PC_funcSelector, msg.value = 0]
+    jumpi           // []
+
+
+    0x00                // [0]
+    calldataload        // [calldata]
+    0xe0                // [0xe0, calldata]
+    shr                 // [func_selector]
+    dup1                // [func_selector, func_selector]
+
+
+    __FUNC_SIG(mintHorse)         // [0x61fc6a67,func_selector,func_selector]
+    eq                            // [bool, func_selector]
+    mint_horse                    // [PC_mintHorse, bool, func_selector]
+    jumpi                         // [func_selector]
+    dup1                          // [func_selector, func_selector]
+
+    __FUNC_SIG(feedHorse)         // [0xc65e2eaa,func_selector,func_selector]
+    eq                            // [bool, func_selector]
+    feed_horse                    // [PC_feedHorse, bool, func_selector]
+    jumpi                         // [func_selector]
+    dup1                         // [func_selector, func_selector]
+
+    __FUNC_SIG(isHappyHorse)      // [0x62134726,func_selector,func_selector]
+    eq                            // [bool, func_selector]
+    is_happy_horse                // [PC_isHappyHorse, bool, func_selector]
+    jumpi                         // [func_selector]
+    dup1                          // [func_selector, func_selector]
+
+    __FUNC_SIG(horseIdToFedTimeStamp)  // [0xf163af78,func_selector,func_selector]
+    eq                            // [bool, func_selector]
+    horse_id_to_fed_time_stamp    // [PC_horseIdToFedTimeStamp, bool, func_selector]
+    jumpi                         // [func_selector]
+
+    __FUNC_SIG(HORSE_HAPPY_IF_FED_WITHIN)  // [0x8c1d96ae,func_selector]
+    eq                            // [bool]
+    horse_happy_if_fed_within     // [PC_horseHappyIfFedWithin, bool]
+    jumpi                         // []
+
+
+    is_happy_horse:
+          IS_HAPPY_HORSE()
+
+    horse_id_to_fed_time_stamp:
+            HORSE_ID_TO_FED_TIME_STAMP()
+
+    horse_happy_if_fed_within:
+            HORSE_HAPPY_IF_FED_WITHIN()
+
+    mint_horse:
+          MINT_HORSE()
+
+    func_Revert:
+          FUNC_REVERT()
+
+    feed_horse:
+          FEED_HORSE()
+}
+
+
+#define macro HORSE_HAPPY_IF_FED_WITHIN() = takes(0) returns(0) {
+    stop
+}
+
+
+#define macro HORSE_ID_TO_FED_TIME_STAMP() = takes(0) returns(0) {
+    stop
+}
+
+
+#define macro IS_HAPPY_HORSE() = takes(0) returns(0) {
+    stop
+}
+
+
+#define macro FUNC_REVERT() = takes(0) returns(0) {
+    0x00
+    0x00
+    revert
+}
+
+
+#define macro FEED_HORSE() = takes(0) returns(0) {
+    stop
+}
+
+
+#define macro MINT_HORSE() = takes(0) returns(0) {
+    stop
+}
+
+
+#define macro PC_mintHorse() = takes(0) returns(0) {
+    stop
+}
