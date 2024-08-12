@@ -24,7 +24,8 @@
 // this is the storage slot for the mapping 
 // the mapping is algorithm and the storage slot is the point where the algorithmn is storaged
 #define constant HORSE_FED_TIMESTAMP_STORAGE = FREE_STORAGE_POINTER() 
-
+// The below value is a true constant since we stuck a value to it and the above once can be changed
+#define constant HORESE_HAPPY_IF_FED_WITHIN_CONST = 0x15180
 
 // the takes is basically what the functions takes from the stack and returns is what is returned back on stack
 #define macro MAIN() = takes(0) returns(0) {
@@ -110,12 +111,51 @@
 
 
 #define macro HORSE_ID_TO_FED_TIME_STAMP() = takes(0) returns(0) {
-    stop
+    0x04                // [0x04]
+    calldataload        // [horseId]
+    [HORSE_FED_TIMESTAMP_STORAGE] // [storage_slot, horseId]
+    LOAD_ELEMENT_FROM_KEYS(0x00)    // [last_updated_timestamp]
+
+    0x00                            // [0x00, last_updated_timestamp]
+    mstore                          // []       // Memory : [0x00 -> last_updated_timestamp]
+
+    0x20                            // [0x20]   // Memory : [0x00 -> last_updated_timestamp, 0x20]
+    0x00                            // [0x00, 0x20]  // Memory : [0x00 -> last_updated_timestamp, 0x20]
+    return                         // []    
 }
 
 
 #define macro IS_HAPPY_HORSE() = takes(0) returns(0) {
+    0x04                // [0x04, timestamp]
+    calldataload        // [key, timestamp]
+    [HORSE_FED_TIMESTAMP_STORAGE] // [storage_slot, key, timestamp]
+    LOAD_ELEMENT_FROM_KEYS(0x00)    // [last_updated_timestamp]
+    timestamp           // [timestamp, last_updated_timestamp]
+    
+    dup2                // [last_updated_timestamp, timestamp, last_updated_timestamp]
+    dup2                // [timestamp, last_updated_timestamp, timestamp, last_updated_timestamp]
+    sub                 // [diff, timestamp, last_updated_timestamp]
+    
+    [HORESE_HAPPY_IF_FED_WITHIN_CONST] // [constant, diff, timestamp, last_updated_timestamp]
+    gt                  // [bool, timestamp, last_updated_timestamp]
+    start_return_true   // [timestamp, last_updated_timestamp]
+    jumpi               // [timestamp, last_updated_timestamp]
+
+    eq                  // [bool]
+    start_return       // [bool]
+    jump
+    
     stop
+
+    start_return_true:
+    0x01                // [0x01, timestamp, last_updated_timestamp]
+
+
+    start_return:
+    0x00                // [0x00, bool]
+    mstore              // [bool]
+    0x20                // [0x20, bool]
+    0x00                // [0x00, 0x20, bool]
 }
 
 
@@ -138,7 +178,10 @@
     jumpi               // [timestamp]
 
     0x04                // [0x04, timestamp]
-    calldataload        // [calldata-func_selector, timestamp]
+    calldataload        // [key, timestamp]
+    [HORSE_FED_TIMESTAMP_STORAGE] // [storage_slot, key, timestamp]
+    STORE_ELEMENT_FROM_KEYS(0x00)
+    
     stop
 
     func_Revert:
