@@ -8,12 +8,22 @@
 */
 
 
+/* Imports */
+#include "../../lib/huffmate/src/data-structures/Hashmap.huff"
+
+
 /* Interfaces */
 #define function mintHorse() nonpayable returns ()
 #define function feedHorse(uint256 horseId) nonpayable returns ()
 #define function isHappyHorse(uint256 horseId) view returns (bool)
 #define function horseIdToFedTimeStamp(uint256 horseId) view returns (uint256)
 #define function HORSE_HAPPY_IF_FED_WITHIN() view returns (uint256)
+
+
+/* Constants */
+// this is the storage slot for the mapping 
+// the mapping is algorithm and the storage slot is the point where the algorithmn is storaged
+#define constant HORSE_FED_TIMESTAMP_STORAGE = FREE_STORAGE_POINTER() 
 
 
 // the takes is basically what the functions takes from the stack and returns is what is returned back on stack
@@ -26,6 +36,13 @@
     func_Revert   // [PC_funcSelector, msg.value = 0]
     jumpi           // []
 
+
+    // this part is to see if the calldata size is more than 4 bytes
+    calldatasize    // [calldata_size]
+    0x03            // [0x04, calldata_size]
+    gt              // [4 > calldata_size]
+    func_Revert     // [PC_funcSelector, 4 > calldata_size]
+    jumpi
 
     0x00                // [0]
     calldataload        // [calldata]
@@ -63,6 +80,10 @@
     jumpi                         // []
 
 
+    0x00            // [0x00]
+    0x00            // [0x00, 0x00]
+    revert          // []
+
     is_happy_horse:
           IS_HAPPY_HORSE()
 
@@ -99,22 +120,33 @@
 
 
 #define macro FUNC_REVERT() = takes(0) returns(0) {
-    0x00
-    0x00
-    revert
+    0x00            // [0x00]
+    0x00            // [0x00, 0x00]
+    revert          // []
 }
 
 
 #define macro FEED_HORSE() = takes(0) returns(0) {
+    timestamp           // [timestamp]
+    0x04                // [0x04, timestamp]
+    calldatasize        // [calldatasize, 0x04, timestamp]
+    sub                 // [size, timestamp]
+    0x20                // [0x20, size, timestamp]
+    eq                  // [bool, timestamp]
+    iszero              // [bool(bool), timestamp]
+    func_Revert         // [PC_revert, bool(bool), timestamp]
+    jumpi               // [timestamp]
+
+    0x04                // [0x04, timestamp]
+    calldataload        // [calldata-func_selector, timestamp]
     stop
+
+    func_Revert:
+        FUNC_REVERT()
+
 }
 
 
 #define macro MINT_HORSE() = takes(0) returns(0) {
-    stop
-}
-
-
-#define macro PC_mintHorse() = takes(0) returns(0) {
     stop
 }

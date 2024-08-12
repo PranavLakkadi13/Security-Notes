@@ -31,3 +31,6 @@
 [submodule "8-Horse-Store/lib/openzeppelin-contracts"]
 	path = 8-Horse-Store/lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "8-Horse-Store/lib/huffmate"]
+	path = 8-Horse-Store/lib/huffmate
+	url = https://github.com/huff-language/huffmate

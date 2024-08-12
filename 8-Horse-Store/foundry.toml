@@ -6,6 +6,7 @@ ffi = true
 evm_version = "cancun"
 
 remappings = ["foundry-huff/=lib/foundry-huff/src",
-               "@openzeppelin/=lib/openzeppelin-contracts/" ]
+              "@openzeppelin/=lib/openzeppelin-contracts/",
+              "huffmate/=lib/huffmate"]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
