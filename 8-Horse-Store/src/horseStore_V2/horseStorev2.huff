@@ -27,6 +27,7 @@
 #define constant HORSE_FED_TIMESTAMP_STORAGE = FREE_STORAGE_POINTER() 
 // The below value is a true constant since we stuck a value to it and the above once can be changed
 #define constant HORESE_HAPPY_IF_FED_WITHIN_CONST = 0x15180
+#define constant TOTAL_SUPPLY = FREE_STORAGE_POINTER()
 
 // "NON_PAYABLE" Revert Message String
 #define constant NON_PAYABLE_ERROR = 0xb4e4f4e5f50415941424c45000000000000000000000000000000000000000000
@@ -39,6 +40,11 @@
     [NON_PAYABLE_LENGTH]     // [11 (length), "NON_PAYABLE"]
     callvalue iszero         // [msg.value == 0, 11 (length), "NON_PAYABLE"]
     REQUIRE()                // []
+}
+
+
+#define macro CONSTRUCTOR() = takes(0) returns(0) {
+    ERC721_CONSTRUCTOR()     // []
 }
 
 
@@ -64,7 +70,33 @@
     calldataload        // [calldata]
     0xe0                // [0xe0, calldata]
     shr                 // [func_selector]
-    dup1                // [func_selector, func_selector]
+    // dup1                // [func_selector, func_selector]
+
+    dup1 __FUNC_SIG(totalSupply) eq totalSupply jumpi
+    dup1 __FUNC_SIG(feedHorse) eq feedHorse jumpi
+    dup1 __FUNC_SIG(isHappyHorse) eq isHappyHorse jumpi
+    dup1 __FUNC_SIG(horseIdToFedTimeStamp) eq horseIdToFedTimeStamp jumpi
+    dup1 __FUNC_SIG(mintHorse) eq mintHorse jumpi
+    dup1 __FUNC_SIG(HORSE_HAPPY_IF_FED_WITHIN) eq horseHappyIfFedWithin jumpi
+
+    dup1 __FUNC_SIG(approve) eq approve jumpi
+    dup1 __FUNC_SIG(setApprovalForAll) eq setApprovalForAll jumpi
+    dup1 __FUNC_SIG(transferFrom) eq transferFrom jumpi
+
+    dup1 __FUNC_SIG(name) eq name jumpi
+    dup1 __FUNC_SIG(symbol) eq symbol jumpi
+    dup1 __FUNC_SIG(tokenURI) eq tokenURI jumpi
+    dup1 __FUNC_SIG(supportsInterface)eq supportsInterface jumpi
+
+    dup1 __FUNC_SIG(getApproved) eq getApproved jumpi
+    dup1 __FUNC_SIG(isApprovedForAll) eq isApprovedForAll jumpi
+
+    dup1 __FUNC_SIG(balanceOf) eq balanceOf jumpi
+    dup1 __FUNC_SIG(ownerOf)eq ownerOf jumpi
+
+    dup1 __FUNC_SIG(safeTransferFrom) eq safeTransferFrom jumpi
+    dup1 __FUNC_SIG("safeTransferFrom(address,address,uint256,bytes)") eq safeTransferFromData jumpi// [func_selector, func_selector, func_selector]
+
 
 
     __FUNC_SIG(mintHorse)         // [0x61fc6a67,func_selector,func_selector]
@@ -116,7 +148,36 @@
           FUNC_REVERT()
 
     feed_horse:
-          FEED_HORSE()
+          FEED_HORSE()// []
+          
+    approve:
+        APPROVE()     // []
+        
+    setApprovalForAll:
+        SET_APPROVAL_FOR_ALL()// []
+        
+    transferFrom:
+        TRANSFER_FROM()       // []
+    name:
+        NAME()
+    symbol:
+        SYMBOL()
+    tokenURI:
+        TOKEN_URI()
+    supportsInterface:
+        SUPPORTS_INTERFACE()
+    getApproved:
+        GET_APPROVED()
+    isApprovedForAll:
+        IS_APPROVED_FOR_ALL()
+    balanceOf:
+        BALANCE_OF()
+    ownerOf:
+        OWNER_OF()
+    safeTransferFrom:
+        SAFE_TRANSFER_FROM()
+    safeTransferFromData:
+        SAFE_TRANSFER_FROM_WITH_DATA()
 }
 
 
@@ -128,7 +189,6 @@
     0x00 
     return 
 }
-
 
 #define macro HORSE_ID_TO_FED_TIME_STAMP() = takes(0) returns(0) {
     0x04                // [0x04]
@@ -211,8 +271,26 @@
 
 
 #define macro MINT_HORSE() = takes(0) returns(0) {
+    [TOTAL_SUPPLY]    // [total_supply_ptr]
+    sload             // [total_supply]
+    dup1              // [total_supply, total_supply]
+    caller            // [msg.sender, total_supply, total_supply]
+    _MINT()           // [total_supply]
+
+    0x01              // [0x01, total_supply]
+    add               // [total_supply + 1]
+    [TOTAL_SUPPLY]    // [total_supply_ptr, total_supply + 1]
+    sstore            // []
     stop
 }
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+///////////////// Imported from HUFFMATE ///////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
 
 // Interface
 #define function name() nonpayable returns (string)
