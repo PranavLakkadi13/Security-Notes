@@ -73,29 +73,89 @@
     // dup1                // [func_selector, func_selector]
 
     dup1 __FUNC_SIG(totalSupply) eq totalSupply jumpi
-    dup1 __FUNC_SIG(feedHorse) eq feedHorse jumpi
-    dup1 __FUNC_SIG(isHappyHorse) eq isHappyHorse jumpi
-    dup1 __FUNC_SIG(horseIdToFedTimeStamp) eq horseIdToFedTimeStamp jumpi
-    dup1 __FUNC_SIG(mintHorse) eq mintHorse jumpi
-    dup1 __FUNC_SIG(HORSE_HAPPY_IF_FED_WITHIN) eq horseHappyIfFedWithin jumpi
+    // dup1 __FUNC_SIG(feedHorse) eq feedHorse jumpi
+    // dup1 __FUNC_SIG(isHappyHorse) eq isHappyHorse jumpi
+    // dup1 __FUNC_SIG(horseIdToFedTimeStamp) eq horseIdToFedTimeStamp jumpi
+    // dup1 __FUNC_SIG(mintHorse) eq mintHorse jumpi
+    // dup1 __FUNC_SIG(HORSE_HAPPY_IF_FED_WITHIN) eq horseHappyIfFedWithin jumpi
 
-    dup1 __FUNC_SIG(approve) eq approve jumpi
-    dup1 __FUNC_SIG(setApprovalForAll) eq setApprovalForAll jumpi
-    dup1 __FUNC_SIG(transferFrom) eq transferFrom jumpi
+    dup1 // [func_selector, func_selector, func_selector]
+    __FUNC_SIG(approve) // [func_sig(approve), func_selector, func_selector, func_selector]
+    eq                  // [(func_sig(approve) == func_selector), func_selector, func_selector]
+    approve             // [approve, (func_sig(approve) == func_selector), func_selector, func_selector]
+    jumpi               // [func_selector, func_selector]
+    
+    dup1                // [func_selector, func_selector, func_selector]
+    __FUNC_SIG(setApprovalForAll) // [func_sig(setApprovalForAll), func_selector, func_selector, func_selector]
+    eq                            // [(func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    setApprovalForAll             // [setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
+    dup1                          // [setApprovalForAll, setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    
+    __FUNC_SIG(transferFrom)      // [func_sig(transferFrom), setApprovalForAll, setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                            // [(func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    transferFrom                  // [transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
+    dup1                          // [transferFrom, transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    
+    __FUNC_SIG(name)             // [func_sig(name), transferFrom, transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                           // [(func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    name                         // [name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
+    dup1                         // [name, name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+     
+    __FUNC_SIG(symbol)           // [func_sig(symbol), name, name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                           // [(func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    symbol                       // [symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
+    dup1                         // [symbol, symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    
+    __FUNC_SIG(tokenURI)        // [func_sig(tokenURI), symbol, symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                          // [(func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    tokenURI                    // [tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
+    dup1                        // [tokenURI, tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    
+    __FUNC_SIG(supportsInterface)// [func_sig(supportsInterface), tokenURI, tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                           // [(func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    supportsInterface            // [supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
 
-    dup1 __FUNC_SIG(name) eq name jumpi
-    dup1 __FUNC_SIG(symbol) eq symbol jumpi
-    dup1 __FUNC_SIG(tokenURI) eq tokenURI jumpi
-    dup1 __FUNC_SIG(supportsInterface)eq supportsInterface jumpi
+    dup1                         // [supportsInterface, supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    __FUNC_SIG(getApproved)      // [func_sig(getApproved), supportsInterface, supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                           // [(func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    getApproved                  // [getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
+    dup1                         // [getApproved, getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    
+    __FUNC_SIG(isApprovedForAll) // [func_sig(isApprovedForAll), getApproved, getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                           // [(func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    isApprovedForAll             // [isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
 
-    dup1 __FUNC_SIG(getApproved) eq getApproved jumpi
-    dup1 __FUNC_SIG(isApprovedForAll) eq isApprovedForAll jumpi
+    dup1                         // [isApprovedForAll, isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    __FUNC_SIG(balanceOf)        // [func_sig(balanceOf), isApprovedForAll, isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                           // [(func_sig(balanceOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    balanceOf                    // [balanceOf, (func_sig(balanceOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi                        // [isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    
+    dup1                         // [isApprovedForAll, isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    __FUNC_SIG(ownerOf)          // [func_sig(ownerOf), isApprovedForAll, isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                           // [(func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    ownerOf                      // [ownerOf, (func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
 
-    dup1 __FUNC_SIG(balanceOf) eq balanceOf jumpi
-    dup1 __FUNC_SIG(ownerOf)eq ownerOf jumpi
-
-    dup1 __FUNC_SIG(safeTransferFrom) eq safeTransferFrom jumpi
-    dup1 __FUNC_SIG("safeTransferFrom(address,address,uint256,bytes)") eq safeTransferFromData jumpi// [func_selector, func_selector, func_selector]
+    dup1                         // [ownerOf, ownerOf, (func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    __FUNC_SIG(safeTransferFrom) // [func_sig(safeTransferFrom), ownerOf, ownerOf, (func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                           // [(func_sig(safeTransferFrom) == ownerOf), ownerOf, (func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    safeTransferFrom             // [safeTransferFrom, (func_sig(safeTransferFrom) == ownerOf), ownerOf, (func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi
+    
+    dup1                         // [safeTransferFrom, safeTransferFrom, (func_sig(safeTransferFrom) == ownerOf), ownerOf, (func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    __FUNC_SIG("safeTransferFrom(address,address,uint256,bytes)") // [func_sig("safeTransferFro), safeTransferFrom, safeTransferFrom, (func_sig(safeTransferFrom) == ownerOf), ownerOf, (func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    eq                                                            // [(func_sig("safeTransferFro) == safeTransferFrom), safeTransferFrom, (func_sig(safeTransferFrom) == ownerOf), ownerOf, (func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    safeTransferFromData                                          // [safeTransferFromData, (func_sig("safeTransferFro) == safeTransferFrom), safeTransferFrom, (func_sig(safeTransferFrom) == ownerOf), ownerOf, (func_sig(ownerOf) == isApprovedForAll), isApprovedForAll, (func_sig(isApprovedForAll) == getApproved), getApproved, (func_sig(getApproved) == supportsInterface), supportsInterface, (func_sig(supportsInterface) == tokenURI), tokenURI, (func_sig(tokenURI) == symbol), symbol, (func_sig(symbol) == name), name, (func_sig(name) == transferFrom), transferFrom, (func_sig(transferFrom) == setApprovalForAll), setApprovalForAll, (func_sig(setApprovalForAll) == func_selector), func_selector, func_selector]
+    jumpi// [func_selector, func_selector, func_selector]
 
 
 
@@ -159,23 +219,32 @@
     transferFrom:
         TRANSFER_FROM()       // []
     name:
-        NAME()
+        NAME()                // []
+        
     symbol:
-        SYMBOL()
+        SYMBOL()              // []
+        
     tokenURI:
-        TOKEN_URI()
+        TOKEN_URI()           // []
+        
     supportsInterface:
-        SUPPORTS_INTERFACE()
+        SUPPORTS_INTERFACE()  // []
+        
     getApproved:
-        GET_APPROVED()
+        GET_APPROVED()        // []
+        
     isApprovedForAll:
-        IS_APPROVED_FOR_ALL()
+        IS_APPROVED_FOR_ALL() // []
+        
     balanceOf:
-        BALANCE_OF()
+        BALANCE_OF()          // []
+        
     ownerOf:
-        OWNER_OF()
+        OWNER_OF()            // []
+        
     safeTransferFrom:
-        SAFE_TRANSFER_FROM()
+        SAFE_TRANSFER_FROM()  // []
+        
     safeTransferFromData:
         SAFE_TRANSFER_FROM_WITH_DATA()
 }
