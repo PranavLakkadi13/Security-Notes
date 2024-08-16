@@ -19,6 +19,7 @@
 #define function isHappyHorse(uint256 horseId) view returns (bool)
 #define function horseIdToFedTimeStamp(uint256 horseId) view returns (uint256)
 #define function HORSE_HAPPY_IF_FED_WITHIN() view returns (uint256)
+#define function totalSupply() view returns (uint256)
 
 
 /* Constants */
@@ -272,6 +273,7 @@
     [HORESE_HAPPY_IF_FED_WITHIN_CONST]// [HORSE_HAPPY_IF_FED_WITHIN]
     0x00                       // [0x00, constant]
     mstore                     // []       // Memory : [0x00 -> constant]
+    
     0x20 
     0x00 
     return 
@@ -323,6 +325,7 @@
     mstore              // [bool]
     0x20                // [0x20, bool]
     0x00                // [0x00, 0x20, bool]
+    return
 }
 
 
@@ -334,16 +337,16 @@
 
 
 #define macro FEED_HORSE() = takes(0) returns(0) {
-    timestamp           // [timestamp]
-    0x04                // [0x04, timestamp]
-    calldatasize        // [calldatasize, 0x04, timestamp]
-    sub                 // [size, timestamp]
-    0x20                // [0x20, size, timestamp]
-    eq                  // [bool, timestamp]
-    iszero              // [bool(bool), timestamp]
-    func_Revert         // [PC_revert, bool(bool), timestamp]
-    jumpi               // [timestamp]
+    0x04                // [0x04]
+    calldatasize        // [calldatasize, 0x04]
+    sub                 // [size]
+    0x20                // [0x20, size]
+    eq                  // [bool]
+    iszero              // [bool(bool)]
+    func_Revert         // [PC_revert, bool(bool)]
+    jumpi               // []
 
+    timestamp           // [timestamp]
     0x04                // [0x04, timestamp]
     calldataload        // [key, timestamp]
     [HORSE_FED_TIMESTAMP_STORAGE] // [storage_slot, key, timestamp]
