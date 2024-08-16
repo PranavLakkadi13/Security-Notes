@@ -72,7 +72,11 @@
     shr                 // [func_selector]
     // dup1                // [func_selector, func_selector]
 
-    dup1 __FUNC_SIG(totalSupply) eq totalSupply jumpi
+    dup1 // [func_selector, func_selector, func_selector]
+    __FUNC_SIG(totalSupply) // [func_sig(totalSupply), func_selector, func_selector, func_selector]
+    eq                      // [(func_sig(totalSupply) == func_selector), func_selector, func_selector]
+    totalSupply             // [totalSupply, (func_sig(totalSupply) == func_selector), func_selector, func_selector]
+    jumpi
     // dup1 __FUNC_SIG(feedHorse) eq feedHorse jumpi
     // dup1 __FUNC_SIG(isHappyHorse) eq isHappyHorse jumpi
     // dup1 __FUNC_SIG(horseIdToFedTimeStamp) eq horseIdToFedTimeStamp jumpi
@@ -192,6 +196,10 @@
     0x00            // [0x00, 0x00]
     revert          // []
 
+
+    totalSupply:
+        TOTALSUPPLY()
+
     is_happy_horse:
           IS_HAPPY_HORSE()
 
@@ -249,6 +257,16 @@
         SAFE_TRANSFER_FROM_WITH_DATA()
 }
 
+
+#define macro TOTALSUPPLY() = takes(0) returns(0) {
+    [TOTAL_SUPPLY]    // [total_supply_ptr]
+    sload             // [total_supply]
+    0x00              // [0x00, total_supply]
+    mstore            // []       // Memory : [0x00 -> total_supply]
+    0x20              // [0x20]   // Memory : [0x00 -> total_supply, 0x20]
+    0x00              // [0x00, 0x20]  // Memory : [0x00 -> total_supply, 0x20]
+    return            // [total_supply]
+}
 
 #define macro HORSE_HAPPY_IF_FED_WITHIN() = takes(0) returns(0) {
     [HORESE_HAPPY_IF_FED_WITHIN_CONST]// [HORSE_HAPPY_IF_FED_WITHIN]
