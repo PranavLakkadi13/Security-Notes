@@ -61,6 +61,10 @@ abstract contract Base_TestV2 is Test {
         assertEq(horseStore.isHappyHorse(horseId), false);
     }
 
+    function test_horseCOntantValue() public view{
+        assertEq(horseStore.HORSE_HAPPY_IF_FED_WITHIN(), 1 days);
+    }
+
     function testHorseIsHappyIfFedWithinPast24Hours(uint256 horseId, uint256 checkAt) public {
         uint256 fedAt = horseStore.HORSE_HAPPY_IF_FED_WITHIN();
         checkAt = bound(checkAt, fedAt + 1 seconds, fedAt + horseStore.HORSE_HAPPY_IF_FED_WITHIN() - 1 seconds);

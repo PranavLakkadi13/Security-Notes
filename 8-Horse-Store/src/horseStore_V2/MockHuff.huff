@@ -1,0 +1,37 @@
+#define function horseCOunt() nonpayable returns(uint) 
+
+
+/* constants */
+#define constant MAX_HORSES = 0x15180
+
+
+
+#define macro MAIN() = takes(0) returns(0) { 
+    0x00
+    calldataload 
+    0xe0
+    shr
+
+    __FUNC_SIG(horseCOunt)
+    eq
+    jump_max
+    jumpi
+
+    0x00
+    0x00
+    revert 
+
+    jump_max:
+        count()
+
+}
+
+#define macro count() = takes(0) returns(0) { 
+    [MAX_HORSES]
+    0x00 
+    mstore 
+
+    0x20
+    0x00 
+    return
+}
