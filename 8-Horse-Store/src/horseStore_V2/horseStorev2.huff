@@ -164,7 +164,7 @@
     jumpi// [func_selector, func_selector, func_selector]
 
 
-
+    dup1
     __FUNC_SIG(mintHorse)         // [0x61fc6a67,func_selector,func_selector]
     eq                            // [bool, func_selector]
     mint_horse                    // [PC_mintHorse, bool, func_selector]
@@ -339,21 +339,6 @@
 
 
 #define macro FEED_HORSE() = takes(0) returns(0) {
-    0x04                // [0x04]
-    calldatasize        // [calldatasize, 0x04]
-    sub                 // [size]
-    dup1
-    dup3
-    swap1               
-    lt                  // [stack_underflow]
-    func_Revert         // [func_Revert, stack_underflow]
-    jumpi               // []
-
-    0x20                // [0x20, size]
-    eq                  // [bool]
-    iszero              // [bool(bool)]
-    func_Revert         // [PC_revert, bool(bool)]
-    jumpi               // []
 
     timestamp           // [timestamp]
     0x04                // [0x04, timestamp]
