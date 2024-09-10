@@ -11,6 +11,7 @@ library MathMasters {
     /*//////////////////////////////////////////////////////////////
                                  ERRORS
     //////////////////////////////////////////////////////////////*/
+    // @audit this wont compile if u use the current solc version of 0.8.3 as custom errors are not supported
     error MathMasters__FactorialOverflow();
     error MathMasters__MulWadFailed();
     error MathMasters__DivWadFailed();
@@ -38,6 +39,8 @@ library MathMasters {
         assembly {
             // Equivalent to `require(y == 0 || x <= type(uint256).max / y)`.
             if mul(y, gt(x, div(not(0), y))) {
+                // @audit this is storing at the wrong place in memory (overriding the free memeory pointer since 0x40 is reserved for it)
+                // @audit teh error selector is wrong its "0xa56044f7"
                 mstore(0x40, 0xbac65e5b) // `MathMasters__MulWadFailed()`.
                 revert(0x1c, 0x04)
             }
@@ -50,10 +53,12 @@ library MathMasters {
         /// @solidity memory-safe-assembly
         assembly {
             // Equivalent to `require(y == 0 || x <= type(uint256).max / y)`.
+            // similar to above and the same issues
             if mul(y, gt(x, div(not(0), y))) {
                 mstore(0x40, 0xbac65e5b) // `MathMasters__MulWadFailed()`.
                 revert(0x1c, 0x04)
             }
+            // @audit this line is wrong and not needed 
             if iszero(sub(div(add(z, x), y), 1)) { x := add(x, 1) }
             z := add(iszero(iszero(mod(mul(x, y), WAD))), div(mul(x, y), WAD))
         }
