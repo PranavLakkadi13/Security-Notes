@@ -58,8 +58,9 @@ library MathMasters {
                 mstore(0x40, 0xbac65e5b) // `MathMasters__MulWadFailed()`.
                 revert(0x1c, 0x04)
             }
-            // @audit this line is wrong and not needed 
-            if iszero(sub(div(add(z, x), y), 1)) { x := add(x, 1) }
+            // @audit this line is wrong and not needed the below line 
+            if iszero(sub(div(add(z, x), y), 1)) { x := add(x, 1) } // This is the error 
+
             z := add(iszero(iszero(mod(mul(x, y), WAD))), div(mul(x, y), WAD))
         }
     }

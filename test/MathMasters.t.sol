@@ -25,6 +25,19 @@ contract MathMastersTest is Base_Test {
         assertEq(MathMasters.mulWadUp(369, 271), 1);
     }
 
+    // the counter example received by halmos 
+    function test_UnitTestMulWadUp() public {
+        uint256 x = 392963816396865184060895128519472638745;
+        uint256 y = 289133969112664987748073243965073899540;
+        uint256 result = MathMasters.mulWadUp(x, y);
+        console2.log("result: ", result);
+        uint256 expected = MathMasters.mulWad(x, y);
+        console2.log("expected: ", expected);
+        vm.expectRevert();
+        assert(result == expected);
+    }
+
+
     function testMulWadUpFuzz(uint256 x, uint256 y) public {
         // We want to skip the case where x * y would overflow.
         // Since Solidity 0.8.0 checks for overflows by default,
@@ -40,6 +53,13 @@ contract MathMastersTest is Base_Test {
         // this function will simply not perform the assertion.
         // In a testing context, you might want to handle this case differently,
         // depending on whether you want to consider such an overflow case as passing or failing.
+    }
+
+    function check_testMulWadUpFuzz(uint256 x, uint256 y) public pure{
+        require(x == 0 || y == 0 || y <= type(uint256).max / x);
+        uint256 result = MathMasters.mulWadUp(x, y);
+        uint256 expected = x * y == 0 ? 0 : (x * y - 1) / 1e18 + 1;
+        assert(result == expected);
     }
 
     function testSqrt() public {
