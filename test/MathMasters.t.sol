@@ -55,6 +55,7 @@ contract MathMastersTest is Base_Test {
         // depending on whether you want to consider such an overflow case as passing or failing.
     }
 
+    // this is the test for the halmos tool 
     function check_testMulWadUpFuzz(uint256 x, uint256 y) public pure{
         require(x == 0 || y == 0 || y <= type(uint256).max / x);
         uint256 result = MathMasters.mulWadUp(x, y);
@@ -69,6 +70,10 @@ contract MathMastersTest is Base_Test {
         assertEq(MathMasters.sqrt(110889), 333);
         assertEq(MathMasters.sqrt(32239684), 5678);
         assertEq(MathMasters.sqrt(type(uint256).max), 340282366920938463463374607431768211455);
+    }
+
+    function check_sqrtinvariant(uint256 x) public pure {
+        assert(MathMasters.sqrt(x) == uniSqrt(x));
     }
 
     function testSqrtFuzzUni(uint256 x) public pure {
